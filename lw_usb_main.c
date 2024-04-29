@@ -73,7 +73,7 @@ void printHex (u32 data, unsigned channel)
 
 void get_input()
 {
-	xil_printf("."); //A tick here means one loop through the USB main handler
+	//xil_printf("."); //A tick here means one loop through the USB main handler
 	MAX3421E_Task();
 	USB_Task();
 	if (GetUsbTaskState() == USB_STATE_RUNNING) {
@@ -90,14 +90,6 @@ void get_input()
 					xil_printf("%x \n", rcode);
 					return;
 				}
-				xil_printf("keycodes: ");
-				for (int i = 0; i < 6; i++) {
-					xil_printf("%x ", kbdbuf.keycode[i]);
-				}
-				//Outputs the first 4 keycodes using the USB GPIO channel 1
-				printHex (kbdbuf.keycode[0] + (kbdbuf.keycode[1]<<8) + (kbdbuf.keycode[2]<<16) + + (kbdbuf.keycode[3]<<24), 1);
-				//Modify to output the last 2 keycodes on channel 2.
-				xil_printf("\n");
 			}
 			else if (device == 2) {
 				rcode = mousePoll(&buf);

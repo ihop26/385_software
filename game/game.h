@@ -32,6 +32,6 @@ void handle_input(uint8_t buf [4]);
 
 void update_board();
 
-void update_visual(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y);
+void update_visual(int start_x, int start_y, int end_x, int end_y);
 
 #endif

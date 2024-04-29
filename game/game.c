@@ -34,7 +34,7 @@ void setup_game(){
     setColorPalette(13, 0xF,0x6,0xF);
     setRightText("I need to make some text for this", 0, 0, 0, 1);
     setBottomText("I need to make some text for this as well", 0, 0, 0, 1);
-
+    update_visual(0,0,49,49);
     //todo make a basic startup screen
 }
 
@@ -54,7 +54,7 @@ void handle_input(uint8_t buf [4]){
     }
     if(keyboard.pressed[DOWN] || keyboard.held[DOWN]){
         keyboard.pressed[DOWN] = 0;
-        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
+        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
     }
     if(keyboard.pressed[RIGHT] || keyboard.held[RIGHT]){
         keyboard.pressed[RIGHT] = 0;
@@ -66,6 +66,7 @@ void handle_input(uint8_t buf [4]){
     }
     update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
     //TODO UPDATE STATES ETC
+    //printf("%d %d \n", game.cursor_x, game.cursor_y);
 }
 
 /*
@@ -74,7 +75,7 @@ void handle_input(uint8_t buf [4]){
     outputs: none
     effects: rewrites the visual BRAM within the rectangle, used to selectively update the screen
 */
-void update_visual(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_y){
+void update_visual(int start_x, int start_y, int end_x, int end_y){
     //todo updates from startx->endx and starty->endy
     if(start_x > end_x || start_y > end_y){
         return;
