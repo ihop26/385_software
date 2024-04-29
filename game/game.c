@@ -29,6 +29,9 @@ void setup_game(){
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
     setColorPalette(13, 0xF,0x6,0xF);
+    setRightText("I need to make some text for this", 0, 0, 0, 1);
+    setBottomText("I need to make some text for this as well", 0, 0, 0, 1);
+
     //todo make a basic startup screen
 }
 
