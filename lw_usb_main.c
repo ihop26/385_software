@@ -151,12 +151,11 @@ int main() {
 	MAX3421E_init();
 	xil_printf("initializing USB...\n");
 	USB_init();
-
+	uint8_t keys [4];
 	setup_game();
    	// int count = 0;
 	// int count2 = 0;
-	uint8_t keys [4];
-	
+
 	while (1) {
 		get_input();
 		for(int i = 0; i<4; i++){
