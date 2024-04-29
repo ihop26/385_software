@@ -7,3 +7,6 @@
 /* Bit set/clear */
 #define bitset(var, bitno) ((var) |= 1 << (bitno))
 #define bitclr(var, bitno) ((var) &= ~(1 << (bitno)))
+
+/* Bit checking */
+#define bitcheck(var, bitno) (((var) & (1<<bitno)) > 0)

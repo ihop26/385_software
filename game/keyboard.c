@@ -40,13 +40,13 @@ void setup_keyboard(){
 	for(int i = 0; i<100; i++){
 		mapper[i] = 30;
 	}
-	mapper[0x52] = 0;//up arrow
-	mapper[0x51] = 1;//down arrow
-	mapper[0x50] = 2;//left arrow
-	mapper[0x4F] = 3;//right arrow
-	mapper[0x29] = 4;//escape
-	mapper[0x2c] = 5;//spacebar
-	mapper[0x28] = 6;//enter
-	mapper[0x15] = 7;//r
+	mapper[0x52] = UP;
+	mapper[0x51] = DOWN;
+	mapper[0x50] = LEFT;
+	mapper[0x4F] = RIGHT;
+	mapper[0x29] = ESCAPE;
+	mapper[0x2c] = SPACE;
+	mapper[0x28] = ENTER;
+	mapper[0x15] = R;
 }
 

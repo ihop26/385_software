@@ -135,14 +135,6 @@ void get_input()
 		}
 }
 
-void setup_screen(){
-	hdmiTest();
-}
-
-void handle_input(){
-	
-}
-
 void getSold(int index){
 	int starting = 8*index;
 	uint8_t bytes[8];
@@ -160,19 +152,25 @@ int main() {
     XGpio_Initialize(&Gpio_hex, XPAR_GPIO_USB_KEYCODE_DEVICE_ID);
    	XGpio_SetDataDirection(&Gpio_hex, 1, 0x00000000); //configure hex display GPIO
    	XGpio_SetDataDirection(&Gpio_hex, 2, 0x00000000); //configure hex display GPIO
-
-
-
-   	int count = 0;
 	xil_printf("initializing MAX3421E...\n");
 	MAX3421E_init();
 	xil_printf("initializing USB...\n");
 	USB_init();
-	int count2 = 0;
-	setup_screen();
+
+	setup_game();
+   	// int count = 0;
+	// int count2 = 0;
+	uint8_t keys [4];
+	
 	while (1) {
 		get_input();
-		handle_input();
+		for(int i = 0; i<4; i++){
+			keys[i] = kbdbuf.keycode[i];
+		}
+		handle_input(keys);
+
+
+		/*
 		count++;
 		uint8_t i [8];
 		if(count == 10){
@@ -192,6 +190,7 @@ int main() {
 			}
 
 		}
+		*/
 
 
 	}
