@@ -90,6 +90,8 @@ void get_input()
 					xil_printf("%x \n", rcode);
 					return;
 				}
+			printHex (kbdbuf.keycode[0] + (kbdbuf.keycode[1]<<8) + (kbdbuf.keycode[2]<<16) + + (kbdbuf.keycode[3]<<24), 1);
+
 			}
 			else if (device == 2) {
 				rcode = mousePoll(&buf);
@@ -113,6 +115,7 @@ void get_input()
 				errorflag = 1;
 				xil_printf("USB Error State\n");
 				//print out string descriptor here
+
 			}
 		} else //not in USB running state
 		{

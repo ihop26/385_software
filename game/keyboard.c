@@ -55,6 +55,9 @@ void setup_keyboard(){
 	mapper[0x06] = C_KEY;
 	mapper[0x08] = E_KEY;
 	mapper[0x14] = Q_KEY;
+	mapper[0x16] = S_KEY;
+	mapper[0x1A] = W_KEY;
+
 }
 
 int pressed(uint8_t code){
@@ -66,5 +69,5 @@ int pressed(uint8_t code){
 }
 
 int held(uint8_t code){
-	return keyboard.held(code);
+	return keyboard.held[code];
 }

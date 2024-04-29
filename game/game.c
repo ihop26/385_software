@@ -164,7 +164,7 @@ void update_states(){
                 game.shop_menu_index = (game.shop_menu_index+1)&MAX_SHOP_CATEGORIES;
             } else if(pressed(SPACE)){
                 right_bar_changed = 1;
-                game.state = STATE_SHOP
+                game.state = STATE_SHOP;
             }
             break;  
         case STATE_SHOP: //shop menu for individual categories, index through
@@ -173,10 +173,10 @@ void update_states(){
                 game.state = STATE_SHOP_MENU;
             }else if(pressed(W_KEY)){
                 right_bar_changed = 1;
-                game.shop_index = (game.shop_index-1)%MAX_SHOP_ITEMS
+                game.shop_index = (game.shop_index-1)%MAX_SHOP_ITEMS;
             }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
-                game.shop_index = (game.shop_index+1)%MAX_SHOP_ITEMS
+                game.shop_index = (game.shop_index+1)%MAX_SHOP_ITEMS;
             }else if(pressed(SPACE)){
                 //todo buy shit
             }
@@ -237,7 +237,7 @@ void update_right_text(){
                 setRightText(shop_items[game.shop_menu_index][i],0,(5+i*4),foreground,0);
             }
         break;
-        case STATE_CTRL
+        case STATE_CTRL:
             for(int i = 0; i<30; i++){
                 setRightText(controls_text[i],0,i,1,0);
             }
