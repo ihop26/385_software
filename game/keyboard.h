@@ -2,7 +2,7 @@
 #define __KEYB
 
 #include "xil_types.h"
-#define HOLD_THRESHOLD 13
+#define HOLD_THRESHOLD 15
 
 #define UP 0
 #define DOWN 1

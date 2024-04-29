@@ -42,6 +42,8 @@ void setup_game(){
     game.cursor_visual[0][0] = 0x0001;
     game.money = 0;
     game.state = STATE_MENU;
+    game.shop_index = 0;
+    game.shop_menu_index = 0;
 
     //todo set palette
     setColorPalette(0, 	0, 0, 0);
@@ -137,7 +139,6 @@ void update_cursor(){
     effects: giant state machine, navigates between shop, menu, controls, etc, locks certain features in states
 */
 void update_states(){
-    printf("%d\n",game.state);
     int right_bar_changed = 0;
     switch(game.state){
         case STATE_MENU:
@@ -156,12 +157,12 @@ void update_states(){
             if(pressed(ESCAPE)){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
-            } else if(pressed(W_KEY)){ 
+            } else if(pressed(W_KEY)){
                 right_bar_changed = 1;
-                game.shop_menu_index = (game.shop_menu_index-1)%MAX_SHOP_CATEGORIES;
+                game.shop_menu_index = ((game.shop_menu_index-1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
             } else if(pressed(S_KEY)){
                 right_bar_changed = 1;
-                game.shop_menu_index = (game.shop_menu_index+1)&MAX_SHOP_CATEGORIES;
+                game.shop_menu_index = ((game.shop_menu_index+1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
             } else if(pressed(SPACE)){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP;
@@ -173,10 +174,10 @@ void update_states(){
                 game.state = STATE_SHOP_MENU;
             }else if(pressed(W_KEY)){
                 right_bar_changed = 1;
-                game.shop_index = (game.shop_index-1)%MAX_SHOP_ITEMS;
+                game.shop_index = ((game.shop_index-1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
-                game.shop_index = (game.shop_index+1)%MAX_SHOP_ITEMS;
+                game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(SPACE)){
                 //todo buy shit
             }
@@ -208,6 +209,7 @@ void update_states(){
 }
 
 void update_right_text(){
+	int foreground = 1;
     switch(game.state){
         case STATE_MENU:
             for(int i = 0; i<30; i++){
@@ -218,7 +220,6 @@ void update_right_text(){
             for(int i = 0; i<30; i++){
                 setRightText(shop_menu_text[i],0,i,0,1);
             }
-            int foreground = 1;
             for(int i = 0; i<4; i++){
                 foreground = 1;
                 if(game.shop_menu_index == i){
@@ -229,11 +230,10 @@ void update_right_text(){
             break;
         case STATE_SHOP:
             for(int i = 0; i<30; i++){
-                setRightText(shop_text[i],0,i,1,0);
+                setRightText(shop_text[i],0,i,0,1);
             }
-            int foreground = 1;
             for(int i = 0; i<4; i++){
-                foreground = 1
+                foreground = 1;
                 if(game.shop_index == i){
                     foreground = 2;
                 }

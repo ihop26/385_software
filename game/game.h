@@ -1,7 +1,7 @@
 #ifndef __GAME
 #define __GAME
 
-#define MAX_SHOP_ITEMS 10
+#define MAX_SHOP_ITEMS 4
 #define MAX_SHOP_CATEGORIES 4
 
 #include "xil_types.h"
