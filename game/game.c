@@ -220,6 +220,7 @@ void update_right_text(){
             }
             int foreground = 1;
             for(int i = 0; i<4; i++){
+                foreground = 1;
                 if(game.shop_menu_index == i){
                     foreground = 2;
                 }
@@ -230,7 +231,9 @@ void update_right_text(){
             for(int i = 0; i<30; i++){
                 setRightText(shop_text[i],0,i,1,0);
             }
+            int foreground = 1;
             for(int i = 0; i<4; i++){
+                foreground = 1
                 if(game.shop_index == i){
                     foreground = 2;
                 }
@@ -239,7 +242,7 @@ void update_right_text(){
             break;
         case STATE_CTRL:
             for(int i = 0; i<30; i++){
-                setRightText(controls_text[i],0,i,1,0);
+                setRightText(controls_text[i],0,i,0,1);
             }
             break;
     }
