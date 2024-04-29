@@ -41,15 +41,14 @@ void setup_game(){
     game.cursor_height = 0;
     game.cursor_visual[0][0] = 0x0001;
     game.money = 0;
-    game.state = 0;
+    game.state = STATE_MENU;
 
     //todo set palette
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
     setColorPalette(2, 0x0, 0x8, 0x0);
     setColorPalette(13, 0xF,0x6,0xF);
-    setRightText("I need to make some text for this", 0, 0, 0, 1);
-    setBottomText("I need to make some text for this as well", 0, 0, 0, 1);
+    update_right_text();
     update_visual(0,0,49,49);
     //todo make a basic startup screen
 }
@@ -138,6 +137,7 @@ void update_cursor(){
     effects: giant state machine, navigates between shop, menu, controls, etc, locks certain features in states
 */
 void update_states(){
+    printf("%d",game.state);
     int right_bar_changed = 0;
     switch(game.state){
         case STATE_MENU:
@@ -211,21 +211,21 @@ void update_right_text(){
     switch(game.state){
         case STATE_MENU:
             for(int i = 0; i<30; i++){
-                setRightText(menu_text[i],0,i,1,0);
+                setRightText(menu_text[i],0,i,0,1);
             }
-        break;
+            break;
         case STATE_SHOP_MENU:
             for(int i = 0; i<30; i++){
-                setRightText(shop_menu_text[i],0,i,1,0);
+                setRightText(shop_menu_text[i],0,i,0,1);
             }
             int foreground = 1;
             for(int i = 0; i<4; i++){
                 if(game.shop_menu_index == i){
                     foreground = 2;
                 }
-                setRightText(shop_menu_items[i],0,(5+i*4),foreground,0);
+                setRightText(shop_menu_items[i],0,(5+i*4),0,foreground);
             }
-        break;
+            break;
         case STATE_SHOP:
             for(int i = 0; i<30; i++){
                 setRightText(shop_text[i],0,i,1,0);
@@ -234,13 +234,13 @@ void update_right_text(){
                 if(game.shop_index == i){
                     foreground = 2;
                 }
-                setRightText(shop_items[game.shop_menu_index][i],0,(5+i*4),foreground,0);
+                setRightText(shop_items[game.shop_menu_index][i],0,(5+i*4),0,foreground);
             }
-        break;
+            break;
         case STATE_CTRL:
             for(int i = 0; i<30; i++){
                 setRightText(controls_text[i],0,i,1,0);
             }
-        break;
+            break;
     }
 }
