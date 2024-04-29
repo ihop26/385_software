@@ -16,6 +16,8 @@
 #define C_KEY 9
 #define E_KEY 10
 #define Q_KEY 11
+#define W_KEY 12
+#define S_KEY 13
 
 struct KEYBOARD_STATE {
 	uint32_t counting[30];

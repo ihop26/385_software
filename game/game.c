@@ -1,4 +1,5 @@
 #include "game.h"
+#include "shop_text.h"
 
 struct GAME_INFO game;
 
@@ -33,7 +34,7 @@ void setup_game(){
         game.sold_ores[i*2] = 0;
         game.sold_ores[i*2 + 1] = 0;
     }
-
+    game.occup_code = 0;
     game.cursor_x = 0;
     game.cursor_y = 0;
     game.cursor_width = 0;
@@ -45,6 +46,7 @@ void setup_game(){
     //todo set palette
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
+    setColorPalette(2, 0x0, 0x8, 0x0);
     setColorPalette(13, 0xF,0x6,0xF);
     setRightText("I need to make some text for this", 0, 0, 0, 1);
     setBottomText("I need to make some text for this as well", 0, 0, 0, 1);
@@ -112,6 +114,9 @@ void update_board(){
     effects: moves around cursor according to the keyboard struct
 */
 void update_cursor(){
+
+    if(game.cursor_locked) return;
+
     if(pressed(UP) || held(UP)){
         if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
     }
@@ -133,41 +138,109 @@ void update_cursor(){
     effects: giant state machine, navigates between shop, menu, controls, etc, locks certain features in states
 */
 void update_states(){
+    int right_bar_changed = 0;
     switch(game.state){
         case STATE_MENU:
+            game.cursor_locked = TRUE;
             if(pressed(B_KEY)){
+                right_bar_changed = 1;
                 game.state = STATE_SHOP;
             } else if(pressed(C_KEY)){
+                right_bar_changed = 1;
                 game.state = STATE_CTRL;
             } 
             break;
-        case STATE_SHOP:
+        case STATE_SHOP_MENU: //shop menu has 4 categories: conveyors, mines, upgraders, furnaces
+            game.cursor_locked = FALSE;
+            game.shop_index = 0;
             if(pressed(ESCAPE)){
+                right_bar_changed = 1;
                 game.state = STATE_MENU;
-            } else if(pressed(B_KEY)){
-                game.state = STATE_BUY;
-            } else if(pressed(Q_KEY)){
-                //todo change shop
-            } else if(pressed(E_KEY)){
-                //todo change shop
+            } else if(pressed(W_KEY)){ 
+                right_bar_changed = 1;
+                game.shop_menu_index = (game.shop_menu_index-1)%MAX_SHOP_CATEGORIES;
+            } else if(pressed(S_KEY)){
+                right_bar_changed = 1;
+                game.shop_menu_index = (game.shop_menu_index+1)&MAX_SHOP_CATEGORIES;
             } else if(pressed(SPACE)){
-                //todo select logic
+                right_bar_changed = 1;
+                game.state = STATE_SHOP
             }
             break;  
-        case STATE_CTRL:
+        case STATE_SHOP: //shop menu for individual categories, index through
             if(pressed(ESCAPE)){
+                right_bar_changed = 1;
+                game.state = STATE_SHOP_MENU;
+            }else if(pressed(W_KEY)){
+                right_bar_changed = 1;
+                game.shop_index = (game.shop_index-1)%MAX_SHOP_ITEMS
+            }else if(pressed(S_KEY)){
+                right_bar_changed = 1;
+                game.shop_index = (game.shop_index+1)%MAX_SHOP_ITEMS
+            }else if(pressed(SPACE)){
+                //todo buy shit
+            }
+            break;
+        case STATE_CTRL:
+            game.cursor_locked = TRUE;
+            if(pressed(ESCAPE)){
+                right_bar_changed = 1;
                 game.state = STATE_MENU;
             }
             break;
         case STATE_BUY:
+            game.cursor_locked = FALSE;
             if(pressed(ESCAPE)){
                 game.state = STATE_SHOP;
             }
             break;
         case STATE_SELECT:
+            game.cursor_locked = FALSE;
             if(pressed(ESCAPE)){
                 game.state = STATE_SHOP;
             }
             break;
+    }
+
+    if(right_bar_changed == 1){
+        update_right_text();
+    }
+}
+
+void update_right_text(){
+    switch(game.state){
+        case STATE_MENU:
+            for(int i = 0; i<30; i++){
+                setRightText(menu_text[i],0,i,1,0);
+            }
+        break;
+        case STATE_SHOP_MENU:
+            for(int i = 0; i<30; i++){
+                setRightText(shop_menu_text[i],0,i,1,0);
+            }
+            int foreground = 1;
+            for(int i = 0; i<4; i++){
+                if(game.shop_menu_index == i){
+                    foreground = 2;
+                }
+                setRightText(shop_menu_items[i],0,(5+i*4),foreground,0);
+            }
+        break;
+        case STATE_SHOP:
+            for(int i = 0; i<30; i++){
+                setRightText(shop_text[i],0,i,1,0);
+            }
+            for(int i = 0; i<4; i++){
+                if(game.shop_index == i){
+                    foreground = 2;
+                }
+                setRightText(shop_items[game.shop_menu_index][i],0,(5+i*4),foreground,0);
+            }
+        break;
+        case STATE_CTRL
+            for(int i = 0; i<30; i++){
+                setRightText(controls_text[i],0,i,1,0);
+            }
+        break;
     }
 }

@@ -48,36 +48,8 @@ struct TEXT_HDMI_STRUCT {
 	uint8_t				VISUAL[VISUAL_SIZE];
 };
 
-struct COLOR{
-	char name [20];
-	uint8_t red;
-	uint8_t green;
-	uint8_t blue;
-};
-
-
 //you may have to change this line depending on your platform designer
 static volatile struct TEXT_HDMI_STRUCT* hdmi_ctrl = XPAR_HDMI_TEXT_CONTROLLER_0_AXI_BASEADDR;
-
-//CGA colors with names
-static struct COLOR colors[]={
-    {"black",          0x0, 0x0, 0x0},
-	{"blue",           0x0, 0x0, 0xa},
-    {"green",          0x0, 0xa, 0x0},
-	{"cyan",           0x0, 0xa, 0xa},
-    {"red",            0xa, 0x0, 0x0},
-	{"magenta",        0xa, 0x0, 0xa},
-    {"brown",          0xa, 0x5, 0x0},
-	{"light gray",     0xa, 0xa, 0xa},
-    {"dark gray",      0x5, 0x5, 0x5},
-	{"light blue",     0x5, 0x5, 0xf},
-    {"light green",    0x5, 0xf, 0x5},
-	{"light cyan",     0x5, 0xf, 0xf},
-    {"light red",      0xf, 0x5, 0x5},
-	{"light magenta",  0xf, 0x5, 0xf},
-    {"yellow",         0xf, 0xf, 0x5},
-	{"white",          0xf, 0xf, 0xf}
-};
 
 /**************************** Type Definitions *****************************/
 /**
