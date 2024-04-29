@@ -1,6 +1,6 @@
 #include "game.h"
 #include "shop_text.h"
-
+#include "components.h"
 struct GAME_INFO game;
 
 /////////////////////////////////////////////////////////////
@@ -27,12 +27,16 @@ void setup_game(){
     setup_keyboard();
     for(int i = 0; i<50; i++){
         for(int j = 0; j<50; j++){
-            game.cursor_visual[i][j] = 0;
-            game.visual_board[i][j] = 0;
-            game.functional_board[i][j] = 0;
+            game.visual_cached[i][j] = 0;
+            game.board[i][j] = 0;
         }
         game.sold_ores[i*2] = 0;
         game.sold_ores[i*2 + 1] = 0;
+    }
+    for(int i = 0; i<5; i++){
+        for(int j = 0; j<5; j++){
+            game.cursor[i][j] = {};
+        }
     }
     game.occup_code = 0;
     game.cursor_x = 0;
@@ -169,6 +173,7 @@ void update_states(){
             }
             break;  
         case STATE_SHOP: //shop menu for individual categories, index through
+            game.cursor_locked = FALSE;
             if(pressed(ESCAPE)){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP_MENU;
@@ -180,6 +185,7 @@ void update_states(){
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(SPACE)){
                 //todo buy shit
+                buy();
             }
             break;
         case STATE_CTRL:
@@ -245,5 +251,16 @@ void update_right_text(){
                 setRightText(controls_text[i],0,i,0,1);
             }
             break;
+    }
+}
+
+void buy(){
+    component_t bought = shop_library[game.shop_menu_index][game.shop_index];
+    game.cursor_height = bought.height;
+    game.cursor_width = bought.width;
+    for(int i = 0; i<bought.height; i++){
+        for(int j = 0; j<bought.width; j++){
+            cursor[]
+        }
     }
 }

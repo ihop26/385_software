@@ -8,6 +8,7 @@
 #include "keyboard.h"
 #include "hdmi_text_controller.h"
 #include "states.h"
+#include "components.h"
 
 
 struct GAME_INFO {
@@ -23,12 +24,10 @@ struct GAME_INFO {
     uint8_t cursor_height;
 
     //store indices into the visual library
-    uint8_t cursor_visual [50][50];
-    uint8_t visual_board [50][50];
     uint8_t visual_cached [50][50];
     //store indices into the functional library
-    uint8_t cursor_func [50][50];
-    uint8_t functional_board [50][50];
+    block_t cursor [5][5];
+    block_t board [50][50];
     //store indices into the mine library
     uint8_t mines[50][50];
 
@@ -59,4 +58,6 @@ void update_states();
 void update_visual(int start_x, int start_y, int end_x, int end_y);
 
 void update_right_text();
+
+void buy();
 #endif
