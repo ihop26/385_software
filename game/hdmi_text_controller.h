@@ -7,8 +7,10 @@
 #include "xstatus.h"
 #include "xparameters.h"
 
-#define COLUMNS 30
-#define ROWS 30
+#define RIGHT_COLUMNS 30
+#define BOTTOM_COLUMNS 50
+#define RIGHT_ROWS 25
+#define BOTTOM_ROWS 5
 #define MAX_ORES 256
 #define MAX_SPAWNERS 64
 #define PALETTE_START 0x0000
@@ -22,9 +24,9 @@
 #define GRID_SIZE 50
 
 #define PALETTE_SIZE COLORS*4
-#define TEXT_SIZE ROWS*COLUMNS*2
+#define TEXT_SIZE RIGHT_ROWS*RIGHT_COLUMNS*2
 
-#define BOTTOM_BAR_SIZE 5*80*2
+#define BOTTOM_BAR_SIZE BOTTOM_ROWS*BOTTOM_COLUMNS*2
 #define BOARD_SIZE GRID_SIZE*GRID_SIZE*4
 #define VISUAL_SIZE GRID_SIZE*GRID_SIZE*2
 #define SELL_SIZE MAX_ORES*8
@@ -139,11 +141,13 @@ static struct COLOR colors[]={
  *
  */
 
-void textHDMIColorClr();
-void textHDMIDrawColorText(char* str, int x, int y, uint8_t background, uint8_t foreground);
+void rightTextClr();
+void bottomTextClr();
+void setRightText(char* str, int x, int y, uint8_t background, uint8_t foreground);
+void setBottomText(char* str, int x, int y, uint8_t background, uint8_t foreground);
 void setColorPalette (uint8_t color, uint8_t red, uint8_t green, uint8_t blue); //Fill in this code
-void paletteTest();
-void textHDMIColorScreenSaver();
-void hdmiTest(); //call this for your Week 2 demo
+void setVisual(uint16_t code, int x, int y);
+void setBoard(uint32_t code, int x, int y);
+void setMine(uint8_t index, uint64_t ore);
 
 #endif // HDMI_TEXT_CONTROLLER_H

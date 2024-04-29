@@ -9,7 +9,7 @@
 #include "lw_usb/HID.h"
 
 
-#include "hdmi/hdmi_text_controller.h"
+#include "game/game.h"
 
 #include "xparameters.h"
 #include <xgpio.h>
