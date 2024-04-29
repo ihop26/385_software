@@ -4,6 +4,8 @@
 #include "xil_types.h"
 #include "keyboard.h"
 #include "hdmi_text_controller.h"
+#include "states.h"
+
 
 struct GAME_INFO {
 	uint64_t sold_ores[100]; //updated every game loop
@@ -18,7 +20,9 @@ struct GAME_INFO {
     
     uint16_t visual_board [50][50];
 
-    uint32_t functional_board [50][50]
+    uint32_t functional_board [50][50];
+
+    uint16_t occupied_board [50][50];
     //todo add more game data
 };
 
@@ -28,9 +32,13 @@ extern struct GAME_INFO game;
 
 void setup_game();
 
+void update_cursor();
+
 void handle_input(uint8_t buf [4]);
 
 void update_board();
+
+void update_states();
 
 void update_visual(int start_x, int start_y, int end_x, int end_y);
 

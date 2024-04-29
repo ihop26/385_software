@@ -2,6 +2,20 @@
 
 struct GAME_INFO game;
 
+/////////////////////////////////////////////////////////////
+/*         TODO LIST                                       */
+/*       1. add states to the game                         */
+/*       2. add simple shop functionality                  */
+/*       3. add ability to select & sell components        */
+/*       4. when selecting components can move it around   */
+/*       5. money counter                                  */
+/*       6. rotation of simple components                  */
+/*       7. add support for composite components           */
+/*            (figure out a good way to store this)        */
+/*       8. prestige                                       */
+/*       9. polish game                                    */
+/////////////////////////////////////////////////////////////
+
 /*
     SETUP GAME
     Inputs: none
@@ -48,24 +62,9 @@ void setup_game(){
 void handle_input(uint8_t buf [4]){
     update_keyboard_state(buf);
     //UPDATE CURSOR STUFF
-    if(keyboard.pressed[UP] || keyboard.held[UP]){
-        keyboard.pressed[UP] = 0;
-        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
-    }
-    if(keyboard.pressed[DOWN] || keyboard.held[DOWN]){
-        keyboard.pressed[DOWN] = 0;
-        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
-    }
-    if(keyboard.pressed[RIGHT] || keyboard.held[RIGHT]){
-        keyboard.pressed[RIGHT] = 0;
-        if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width) < 49) game.cursor_x++;
-    }
-    if(keyboard.pressed[LEFT] || keyboard.held[LEFT]){
-        keyboard.pressed[LEFT] = 0;
-        if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width < 50)) game.cursor_x--;
-    }
-    update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
+    update_cursor();
     //TODO UPDATE STATES ETC
+    update_states();
     //printf("%d %d \n", game.cursor_x, game.cursor_y);
 }
 
@@ -104,4 +103,71 @@ void update_visual(int start_x, int start_y, int end_x, int end_y){
 */
 void update_board(){
     //todo update dynamic stuff
+}
+
+/*
+    UPDATE_CURSOR
+    inputs none
+    outputs none
+    effects: moves around cursor according to the keyboard struct
+*/
+void update_cursor(){
+    if(pressed(UP) || held(UP)){
+        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
+    }
+    if(pressed(DOWN) || held(DOWN)){
+        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
+    }
+    if(pressed(RIGHT) || held(RIGHT)){
+        if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width) < 49) game.cursor_x++;
+    }
+    if(pressed(LEFT) || held(LEFT)){
+        if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width < 50)) game.cursor_x--;
+    }
+    update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
+}
+/*
+    UPDATE_STATES
+    inputs none
+    outputs none
+    effects: giant state machine, navigates between shop, menu, controls, etc, locks certain features in states
+*/
+void update_states(){
+    switch(game.state){
+        case STATE_MENU:
+            if(pressed(B_KEY)){
+                game.state = STATE_SHOP;
+            } else if(pressed(C_KEY)){
+                game.state = STATE_CTRL;
+            } 
+            break;
+        case STATE_SHOP:
+            if(pressed(ESCAPE)){
+                game.state = STATE_MENU;
+            } else if(pressed(B_KEY)){
+                game.state = STATE_BUY;
+            } else if(pressed(Q_KEY)){
+                //todo change shop
+            } else if(pressed(E_KEY)){
+                //todo change shop
+            } else if(pressed(SPACE)){
+                //todo select logic
+            }
+            break;  
+        case STATE_CTRL:
+            if(pressed(ESCAPE)){
+                game.state = STATE_MENU;
+            }
+            break;
+        case STATE_BUY:
+            if(pressed(ESCAPE)){
+                game.state = STATE_SHOP;
+            }
+            break;
+        case STATE_SELECT:
+            if(pressed(ESCAPE)){
+                game.state = STATE_SHOP;
+            }
+            break;
+    }
 }

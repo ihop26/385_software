@@ -78,7 +78,7 @@ void setMine(uint8_t index, uint64_t code){
 	hdmi_ctrl->SPAWNERS[7+8*index] = ((code >> 56) & 0xFF);
 }
 
-
+//todo get ores sold
 
 
 

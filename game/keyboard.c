@@ -50,6 +50,21 @@ void setup_keyboard(){
 	mapper[0x29] = ESCAPE;
 	mapper[0x2c] = SPACE;
 	mapper[0x28] = ENTER;
-	mapper[0x15] = R;
+	mapper[0x15] = R_KEY;
+	mapper[0x05] = B_KEY;
+	mapper[0x06] = C_KEY;
+	mapper[0x08] = E_KEY;
+	mapper[0x14] = Q_KEY;
 }
 
+int pressed(uint8_t code){
+	if(keyboard.pressed[code]){
+		keyboard.pressed[code] = 0;
+		return 1;
+	}
+	return 0;
+}
+
+int held(uint8_t code){
+	return keyboard.held(code);
+}

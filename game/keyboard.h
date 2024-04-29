@@ -11,7 +11,11 @@
 #define ESCAPE 4
 #define SPACE 5
 #define ENTER 6
-#define R 7
+#define R_KEY 7
+#define B_KEY 8
+#define C_KEY 9
+#define E_KEY 10
+#define Q_KEY 11
 
 struct KEYBOARD_STATE {
 	uint32_t counting[30];
@@ -29,5 +33,8 @@ void update_keyboard_state(uint8_t buf [4]);
 
 void setup_keyboard();
 
+int pressed(uint8_t code);
+
+int held(uint8_t code);
 
 #endif
