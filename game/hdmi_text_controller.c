@@ -67,7 +67,7 @@ void setBoard(uint32_t code, int x, int y){
 	hdmi_ctrl->BOARD[x*4+y*200+3] = ((code >> 24) & 0xFF);
 }
 
-void setMine(uint8_t index, uint64_t ore){
+void setMine(uint8_t index, uint64_t code){
 	hdmi_ctrl->SPAWNERS[0+8*index] = ((code >>  0) & 0xFF);
 	hdmi_ctrl->SPAWNERS[1+8*index] = ((code >>  8) & 0xFF);
 	hdmi_ctrl->SPAWNERS[2+8*index] = ((code >> 16) & 0xFF);

@@ -1,4 +1,7 @@
 #include "game.h"
+
+struct GAME_INFO game;
+
 /*
     SETUP GAME
     Inputs: none
@@ -21,7 +24,7 @@ void setup_game(){
     game.cursor_y = 0;
     game.cursor_width = 0;
     game.cursor_height = 0;
-    game.cursor_visual[0][0] = 0x0010;
+    game.cursor_visual[0][0] = 0x0001;
     game.money = 0;
     game.state = 0;
 
@@ -87,10 +90,10 @@ void update_visual(uint8_t start_x, uint8_t start_y, uint8_t end_x, uint8_t end_
         for(j = start_y; j<=end_y; j++){
             //(if cursor_visual[i-cursor_x][j-cursor_y] != 0) draw cursor @ ij
             //else draw visual board[i][j] @ ij
-            if((game.cursor_x <= i) && (game.cursor_y <= j) && (game.cursor_visual[i-cursor_x][j-cursor_y])){
-                setVisual(game.cursor_visual[i-cursor_x][j-cursor_y], i, j)
+            if((game.cursor_x <= i) && (game.cursor_y <= j) && (game.cursor_visual[i-game.cursor_x][j-game.cursor_y])){
+                setVisual(game.cursor_visual[i-game.cursor_x][j-game.cursor_y], i, j);
             }else{
-                setVisual(game.visual_board[i][j]);
+                setVisual(game.visual_board[i][j], i, j);
             }
         }
     }

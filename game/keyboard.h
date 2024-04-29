@@ -23,7 +23,7 @@ struct KEYBOARD_STATE {
 
 extern struct KEYBOARD_STATE keyboard;
 
-uint8_t mapper[100];
+extern uint8_t mapper[100];
 
 void update_keyboard_state(uint8_t buf [4]);
 

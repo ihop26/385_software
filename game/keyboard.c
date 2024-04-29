@@ -1,5 +1,8 @@
 #include "keyboard.h"
 
+struct KEYBOARD_STATE keyboard;
+uint8_t mapper[100];
+
 void update_keyboard_state(uint8_t buf [4]){
 
 	uint8_t keyb_index;
