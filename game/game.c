@@ -137,14 +137,14 @@ void update_cursor(){
     effects: giant state machine, navigates between shop, menu, controls, etc, locks certain features in states
 */
 void update_states(){
-    printf("%d",game.state);
+    printf("%d\n",game.state);
     int right_bar_changed = 0;
     switch(game.state){
         case STATE_MENU:
             game.cursor_locked = TRUE;
             if(pressed(B_KEY)){
                 right_bar_changed = 1;
-                game.state = STATE_SHOP;
+                game.state = STATE_SHOP_MENU;
             } else if(pressed(C_KEY)){
                 right_bar_changed = 1;
                 game.state = STATE_CTRL;
