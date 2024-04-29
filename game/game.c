@@ -50,11 +50,11 @@ void handle_input(uint8_t buf [4]){
     //UPDATE CURSOR STUFF
     if(keyboard.pressed[UP] || keyboard.held[UP]){
         keyboard.pressed[UP] = 0;
-        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
+        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
     }
     if(keyboard.pressed[DOWN] || keyboard.held[DOWN]){
         keyboard.pressed[DOWN] = 0;
-        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
+        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
     }
     if(keyboard.pressed[RIGHT] || keyboard.held[RIGHT]){
         keyboard.pressed[RIGHT] = 0;
@@ -64,7 +64,7 @@ void handle_input(uint8_t buf [4]){
         keyboard.pressed[LEFT] = 0;
         if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width < 50)) game.cursor_x--;
     }
-    update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width),(game.cursor_y+game.cursor_height));
+    update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
     //TODO UPDATE STATES ETC
 }
 
