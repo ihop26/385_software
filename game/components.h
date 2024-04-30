@@ -20,9 +20,11 @@ typedef struct
 
 component_t shop_library [MAX_SHOP_CATEGORIES][MAX_SHOP_ITEMS];
 
-block_t conveyor_library[];
-block_t upgrader_library[];
-block_t furnace_library[];
+uint32_t conveyor_library[4];
+uint32_t upgrader_library[4];
+uint32_t furnace_library[4];
+
+uint16_t visual_library[4];
 
 
 

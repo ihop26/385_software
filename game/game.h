@@ -23,19 +23,20 @@ struct GAME_INFO {
     uint8_t cursor_width;
     uint8_t cursor_height;
 
-    //store indices into the visual library
-    uint8_t visual_cached [50][50];
+    
+    
     //store indices into the functional library
+    uint8_t cursor_holding;
     block_t cursor [5][5];
     block_t board [50][50];
-    //store indices into the mine library
-    uint8_t mines[50][50];
+    block_t snapshot [50][50];
 
     //stores unique occupied codes for each component
     uint16_t occup_code;
     uint16_t occupied_board [50][50];
 
     //SHOP VARIABLES
+    uint8_t buying;
     int shop_menu_index;
     int shop_index;
     //todo add more game data
@@ -59,5 +60,10 @@ void update_visual(int start_x, int start_y, int end_x, int end_y);
 
 void update_right_text();
 
-void buy();
+int fill_cursor(component_t filler);
+
+int place_cursor();
+
+int dump_cursor();
+
 #endif

@@ -27,7 +27,7 @@ void setup_game(){
     setup_keyboard();
     for(int i = 0; i<50; i++){
         for(int j = 0; j<50; j++){
-            game.visual_cached[i][j] = 0;
+            game.snapshot[i][j] = 0;
             game.board[i][j] = 0;
         }
         game.sold_ores[i*2] = 0;
@@ -38,12 +38,14 @@ void setup_game(){
             game.cursor[i][j] = {};
         }
     }
-    game.occup_code = 0;
+    game.buying = 0;
+    game.cursor_holding = 0;
+    game.occup_code = 1;
     game.cursor_x = 0;
     game.cursor_y = 0;
-    game.cursor_width = 0;
-    game.cursor_height = 0;
-    game.cursor_visual[0][0] = 0x0001;
+    game.cursor_width = 1;
+    game.cursor_height = 1;
+    game.cursor[0][0] = {5,0,0}
     game.money = 0;
     game.state = STATE_MENU;
     game.shop_index = 0;
@@ -97,10 +99,12 @@ void update_visual(int start_x, int start_y, int end_x, int end_y){
         for(j = start_y; j<=end_y; j++){
             //(if cursor_visual[i-cursor_x][j-cursor_y] != 0) draw cursor @ ij
             //else draw visual board[i][j] @ ij
-            if((game.cursor_x <= i) && (game.cursor_y <= j) && (game.cursor_visual[i-game.cursor_x][j-game.cursor_y])){
-                setVisual(game.cursor_visual[i-game.cursor_x][j-game.cursor_y], i, j);
+            if((game.cursor_x <= i) && (game.cursor_y <= j) && (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
+                uint16_t visual = get_visual(game.cursor[i-game.cursor_x][j-game.cursor_y]);
+                setVisual(visual, i, j);
             }else{
-                setVisual(game.visual_board[i][j], i, j);
+                uint16_t visual = get_visual(game.board[i][j]);
+                setVisual(visual, i, j);
             }
         }
     }
@@ -123,16 +127,16 @@ void update_cursor(){
     if(game.cursor_locked) return;
 
     if(pressed(UP) || held(UP)){
-        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
+        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height-1) < 50) game.cursor_y--;
     }
     if(pressed(DOWN) || held(DOWN)){
-        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
+        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height-1) < 49) game.cursor_y++;
     }
     if(pressed(RIGHT) || held(RIGHT)){
-        if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width) < 49) game.cursor_x++;
+        if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width-1) < 49) game.cursor_x++;
     }
     if(pressed(LEFT) || held(LEFT)){
-        if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width < 50)) game.cursor_x--;
+        if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width-1) < 50) game.cursor_x--;
     }
     update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
 }
@@ -144,6 +148,10 @@ void update_cursor(){
 */
 void update_states(){
     int right_bar_changed = 0;
+    if(!game.cursor_locked && game.cursor_holding && pressed(SPACE)){
+        place_cursor();
+        dump_cursor();
+    }
     switch(game.state){
         case STATE_MENU:
             game.cursor_locked = TRUE;
@@ -167,7 +175,7 @@ void update_states(){
             } else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.shop_menu_index = ((game.shop_menu_index+1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
-            } else if(pressed(SPACE)){
+            } else if(pressed(B_KEY)){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP;
             }
@@ -175,18 +183,30 @@ void update_states(){
         case STATE_SHOP: //shop menu for individual categories, index through
             game.cursor_locked = FALSE;
             if(pressed(ESCAPE)){
-                right_bar_changed = 1;
-                game.state = STATE_SHOP_MENU;
+                if(!game.cursor_holding){
+                    right_bar_changed = 1;
+                    game.state = STATE_SHOP_MENU;
+                }else{
+                    if(buying){
+                        //todo clear cursor and return money
+                    }else{
+                        //todo return moved component back
+                    }
+                }
             }else if(pressed(W_KEY)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index-1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
-            }else if(pressed(SPACE)){
-                //todo buy shit
-                buy();
-            }
+            }else if(pressed(B_KEY)){
+                if(!game.cursor_holding){
+                    buying = 1;
+                    fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
+                }else{
+                    //todo flash text cursor full
+                }
+            } 
             break;
         case STATE_CTRL:
             game.cursor_locked = TRUE;
@@ -254,13 +274,53 @@ void update_right_text(){
     }
 }
 
-void buy(){
-    component_t bought = shop_library[game.shop_menu_index][game.shop_index];
-    game.cursor_height = bought.height;
-    game.cursor_width = bought.width;
-    for(int i = 0; i<bought.height; i++){
-        for(int j = 0; j<bought.width; j++){
-            cursor[]
+int fill_cursor(component_t filler){
+    if(game.cursor_holding) return -1;
+    game.cursor_height = filler.height;
+    game.cursor_width = filler.width;
+    for(int i = 0; i<filler.height; i++){
+        for(int j = 0; j<filler.width; j++){
+            game.cursor[i][j] = filler.blocks[i][j];
         }
     }
+    game.cursor_holding = 1;
+}
+
+int place_cursor(){
+    if(!game.cursor_holding) return -1;
+    uint8_t x = game.cursor_x;
+    uint8_t y = game.cursor_y;
+
+    for(int i = 0; i<game.cursor_width; i++){
+        for(int j = 0; j<game.cursor_height;j++){
+            if(occupied_board[x+i][y+j] != 0 && game.cursor[i][j].type != BLANK_T) return -1;
+        }
+    }
+
+    for(int i = 0 i<game.cursor_width; i++){
+        for(int j = 0; j<game.cursor_height;j++){
+            if(game.cursor[x+i][y+j].type != BLANK_T){
+                game.board[x+i][y+j] = game.cursor[i][j];
+                game.occupied_board[x+i][x+j] = game.occup_code;
+            }
+        }
+    }
+
+    game.occup_code++;
+
+    if(game.occup_code == 0){
+        game.occup_code++;
+    }
+    return 1;
+}
+int dump_cursor(){
+    for(int i = 0; i<5; i++){
+        for(int j = 0; j<5; j++){
+            game.cursor[i][j] = {0};
+        }
+    }
+    game.cursor[0][0] = {5,0,0};
+    game.cursor_holding = 0;
+    game.cursor_height = 1;
+    game.cursor_width = 1;
 }
