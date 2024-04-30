@@ -6,8 +6,8 @@ int fill_cursor(component_t filler){
     if(game.cursor_holding) return 0;
     game.cursor_height = filler.height;
     game.cursor_width = filler.width;
-    for(int i = 0; i<filler.height; i++){
-        for(int j = 0; j<filler.width; j++){
+    for(int i = 0; i<filler.width; i++){
+        for(int j = 0; j<filler.height; j++){
             game.cursor[i][j] = filler.blocks[i][j];
         }
     }
@@ -64,32 +64,44 @@ int dump_cursor(){
     return 1;
 }
 int rotate_cursor(){
+    component_t rotated = (component_t){0};
+    rotated.width = game.cursor_height;
+    rotated.height = game.cursor_width;
+    for(int i = 0; i<game.cursor_width; i++){//transpose
+    	for(int j = 0; j<game.cursor_height; j++){
+    		rotated.blocks[j][i] = game.cursor[i][j];
+    	}
+    }
     block_t temp = (block_t){0};
-    for(int i = 0; i<5; i++){//transpose
-        for(int j = 0; j<5; j++){
-            temp = game.cursor[i][j];
-            game.cursor[i][j] = game.cursor[j][i];
-            game.cursor[j][i] = temp;
-        }
+    for(int i = 0; i<rotated.width; i++){
+    	for(int j = 0; j<rotated.height/2; j++){
+    		temp = rotated.blocks[i][j];
+    		    		rotated.blocks[i][j] = rotated.blocks[i][rotated.height-j-1];
+    		    		rotated.blocks[i][rotated.height-j-1] = temp;
+    	}
     }
-    for(int i = 0; i<5; i++){//reverse rows
-        for(int j = 0; j<2; j++){
-            temp = game.cursor[i][j];
-            game.cursor[i][j] = game.cursor[i][4-j];
-            game.cursor[i][4-j] = temp;
-        }
-    }
-    for(int i = 0; i<5; i++){
-        for(int j = 0; j<5; j++){
+
+    for(int i = 0; i<rotated.width; i++){
+        for(int j = 0; j<rotated.height; j++){
             //cycle around the bottom 2 bits
-            game.cursor[i][j].functional_index =
-             (game.cursor[i][j].functional_index&0xFC)|((game.cursor[i][j].functional_index+1)&0x3);
-             game.cursor[i][j].visual_index =
-             (game.cursor[i][j].visual_index&0xFC)|((game.cursor[i][j].visual_index+1)&0x3);
+        	if(rotated.blocks[i][j].type != BLANK_T){
+        		rotated.blocks[i][j].functional_index =
+        				(rotated.blocks[i][j].functional_index&0xFC)|((rotated.blocks[i][j].functional_index+1)&0x3);
+        		rotated.blocks[i][j].visual_index =
+        		        (rotated.blocks[i][j].visual_index&0xFC)|((rotated.blocks[i][j].visual_index+1)&0x3);
 
+        	}
         }
     }
-
+    dump_cursor();
+    fill_cursor(rotated);
+    for(int i = 0; i< 5; i++){
+    	for(int j = 0; j<5; j++){
+    		xil_printf("%d ",game.cursor[i][j].type);
+    	}
+    	xil_printf("\n");
+    }
+    return 1;
 }
 uint8_t flood_board[50][50];
 
@@ -108,7 +120,11 @@ component_t cut_snapshot(int x, int y){
     int min_y = 51;
     int height_start = -1;
     int height_end = -1;
+    int max_width = 0;
+    int max_height = 0;
     for(int i = 0; i< 50; i++){
+    	height_start = -1;
+    	height_end = -1;
         for(int j = 0; j<50; j++){
             if(game.snapshot[i][j].type != BLANK_T){
                 if(i < min_x){
@@ -125,14 +141,21 @@ component_t cut_snapshot(int x, int y){
                 }
             }
         }
+        if(height_end-height_start+1 > max_height){
+        	max_height = height_end-height_start+1;
+        }
     }
+    xil_printf("\nx:%d y:%d", min_x, min_y);
     int width_start = -1;
     int width_end = -1;
     for(int i = min_y; i<min_y+5; i++){
-
+    	width_end = -1;
+    	width_start = -1;
         for(int j = min_x; j<min_x+5; j++){
             toReturn.blocks[j-min_x][i-min_y] = game.snapshot[j][i];
             if(game.snapshot[j][i].type != BLANK_T){
+            	xil_printf("wee \n");
+
             	if(width_start == -1){
             		width_start = j;
             		width_end = j;
@@ -141,14 +164,14 @@ component_t cut_snapshot(int x, int y){
             	}
             }
         }
+        if(width_end-width_start+1 > max_width){
+        	max_width = width_end-width_start+1;
+        }
     }
-    /*
-    xil_printf("\n%d %d\n", width_start, height_start);
-    xil_printf("%d %d\n", width_end, height_end);
-    xil_printf("%d %d %d", (width_start-width_end+1), ( height_start-height_end+1), toReturn.blocks[0][0].type);
-    */
-    toReturn.width = width_end-width_start+1;
-    toReturn.height = height_end-height_start+1;
+
+    toReturn.height = max_height;
+    toReturn.width = max_width;
+    xil_printf("\n%d %d %d", toReturn.width,toReturn.height,toReturn.blocks[1][0].type);
     update_board(0,0,49,49);
     return toReturn;
 }
@@ -178,10 +201,12 @@ int paste_snapshot(){
             if(game.snapshot[i][j].type != BLANK_T){
                 changed = 1;
                 game.board[i][j] = game.snapshot[i][j];
+                game.occupied_board[i][j] = game.occup_code;
             }
         }
     }
-    update_board(0,0,49,49);
+    game.occup_code++;
+    if(changed) update_board(0,0,49,49);
     return changed;
 }
 

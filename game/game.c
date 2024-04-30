@@ -167,6 +167,7 @@ void update_states(){
     int right_bar_changed = 0;
     int pressed_space = pressed(SPACE);
     int pressed_esc = pressed(ESCAPE);
+    int pressed_r = pressed(R_KEY);
 
     if(pressed_space && !game.cursor_locked){
         if(game.cursor_holding){//try to place
@@ -193,7 +194,11 @@ void update_states(){
         }
     	dump_cursor();
     }
-        
+
+    if(pressed_r && game.cursor_holding){
+    	pressed_r = 0;
+    	rotate_cursor();
+    }
     
     switch(game.state){
         case STATE_MENU:

@@ -52,8 +52,8 @@ uint32_t get_functional(block_t block){
 
 void initialize_shop(){
     conveyor_library[0] = 0x3005; // right
-    conveyor_library[1] = 0x3045; // left
-    conveyor_library[2] = 0x3881; // up 
+    conveyor_library[1] = 0x3881; // up
+    conveyor_library[2] = 0x3045; // left
     conveyor_library[3] = 0x3081; // down
 
     furnace_library[0] = 0; // right
@@ -62,18 +62,18 @@ void initialize_shop(){
     furnace_library[3] = 0; // down
 
     upgrader_library[0] = 0; // right
-    upgrader_library[1] = 0; // left
-    upgrader_library[2] = 0; // up 
+    upgrader_library[1] = 0; // up
+    upgrader_library[2] = 0; // left
     upgrader_library[3] = 0; // down
 
     visual_library[0] = 0xC110; //right conveyor
-    visual_library[1] = 0xC310; //left conveyor
-    visual_library[2] = 0xC410; //up conveyor
+    visual_library[1] = 0xC410; //up conveyor
+    visual_library[2] = 0xC310; //left conveyor
     visual_library[3] = 0xC210;//down conveyor
 
 
     shop_library[0][0] = (component_t){
-    	5,5,
+    	5,1,
 		{
 		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
 		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
@@ -86,8 +86,8 @@ void initialize_shop(){
     shop_library[0][1] = (component_t){
         	2,2,
     		{
-    		{{CONVEYOR_T,1,1},{0},{0},{0},{0}},
-    		{{CONVEYOR_T,1,1},{CONVEYOR_T,1,1},{0},{0},{0}},
+    		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
+    		{{0},{CONVEYOR_T,0,0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}}
