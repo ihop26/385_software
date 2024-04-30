@@ -112,6 +112,7 @@ void update_board(int start_x, int start_y, int end_x, int end_y){
             if((i < game.cursor_x + game.cursor_width) && (i >= game.cursor_x)
             		&& (j < game.cursor_y + game.cursor_height) && (j >= game.cursor_y)
 					&& (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
+
                 uint16_t visual = get_visual(game.cursor[i-game.cursor_x][j-game.cursor_y]);
                 if(visual!=1){
                 	if(game.occupied_board[i][j] == 0){//set green
@@ -372,10 +373,9 @@ component_t cut_snapshot(int x, int y){
     //time to copy things into the cursor
     int min_x = 51;
     int min_y = 51;
-
+    int height_start = -1;
+    int height_end = -1;
     for(int i = 0; i< 50; i++){
-        int height_start = -1;
-        int height_end = -1;
         for(int j = 0; j<50; j++){
             if(game.snapshot[i][j].type != BLANK_T){
                 if(i < min_x){
@@ -384,7 +384,7 @@ component_t cut_snapshot(int x, int y){
                 if(j < min_y){
                     min_y = j;
                 }
-                if(width_start == -1){
+                if(height_start == -1){
                     height_start = j;
                     height_end = j;
                 }else{
@@ -393,10 +393,10 @@ component_t cut_snapshot(int x, int y){
             }
         }
     }
-    
+    int width_start = -1;
+    int width_end = -1;
     for(int i = min_y; i<min_y+5; i++){
-        int width_start = -1;
-        int width_end = -1;
+
         for(int j = min_x; j<min_x+5; j++){
             toReturn.blocks[j-min_x][i-min_y] = game.snapshot[j][i];
             if(game.snapshot[j][i].type != BLANK_T){
@@ -409,8 +409,13 @@ component_t cut_snapshot(int x, int y){
             }
         }
     }
-    toReturn.width = width_start-width_end+1;
-    toReturn.height = height_start-height_end+1;
+    /*
+    xil_printf("\n%d %d\n", width_start, height_start);
+    xil_printf("%d %d\n", width_end, height_end);
+    xil_printf("%d %d %d", (width_start-width_end+1), ( height_start-height_end+1), toReturn.blocks[0][0].type);
+    */
+    toReturn.width = width_end-width_start+1;
+    toReturn.height = height_end-height_start+1;
     update_board(0,0,49,49);
     return toReturn;
 }
