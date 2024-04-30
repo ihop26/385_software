@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "platform.h"
 #include "lw_usb/GenericMacros.h"
 #include "lw_usb/GenericTypeDefs.h"
@@ -137,9 +136,7 @@ void getSold(int index){
 		bytes[x] = 	hdmi_ctrl->SELL[starting+x];
 		hdmi_ctrl->SELL[starting+x] = 0;
 	}
-	for(int x = 0; x<8; x++){
-		printf("%d ",bytes[7-x]);
-	}
+
 
 }
 int main() {

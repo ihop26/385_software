@@ -40,6 +40,8 @@ void setup_game(){
             game.cursor[i][j] = (block_t){0};
         }
     }
+    uint64_t initial_mine = 0x0001800100001040;
+    setMine(0,initial_mine);
     game.buying = 0;
     game.cursor_holding = 0;
     game.occup_code = 1;
@@ -58,8 +60,11 @@ void setup_game(){
     setColorPalette(2, 0x0, 0x8, 0x0);
     setColorPalette(13, 0xF,0x6,0xF);
 
+
+
     setColorPalette(14, 0x8, 0x0, 0x0);
     setColorPalette(15, 0x0, 0x8, 0x0);
+
 
 
     update_right_text();
@@ -80,7 +85,6 @@ void handle_input(uint8_t buf [4]){
     update_cursor();
     //TODO UPDATE STATES ETC
     update_states();
-    //printf("%d %d \n", game.cursor_x, game.cursor_y);
 }
 
 /*
@@ -109,10 +113,12 @@ void update_board(int start_x, int start_y, int end_x, int end_y){
             		&& (j < game.cursor_y + game.cursor_height) && (j >= game.cursor_y)
 					&& (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
                 uint16_t visual = get_visual(game.cursor[i-game.cursor_x][j-game.cursor_y]);
-                if(game.occupied_board[i][j] == 0){//set green
-                    visual = (visual & 0xFF00) | 0xF0;
-                }else{//set red if overlap
-                    visual = (visual & 0xFF00) | 0xE0;
+                if(visual!=1){
+                	if(game.occupied_board[i][j] == 0){//set green
+                	     visual = (visual & 0xFF00) | 0xF0;
+                	}else{//set red if overlap
+                	     visual = (visual & 0xFF00) | 0xE0;
+                	}
                 }
                 setVisual(visual, i, j);
             }else{
@@ -163,13 +169,15 @@ void update_states(){
 
     if(pressed_space && !game.cursor_locked){
         if(game.cursor_holding){//try to place
-            if(place_cursor()){
+            if(place_cursor() != 0){
                 dump_cursor();
                 pressed_space = 0; // succeeded (use up action)
             } 
+            clear_snapshot();
+        	game.buying = 0;
         }else{//try to grab
             component_t cut = cut_snapshot(game.cursor_x,game.cursor_y);
-            if(cut != (component_t){0}){
+            if(cut.width != 0){
                 fill_cursor(cut);
                 pressed_space = 0; //succeeded (use up action)
             }
@@ -178,13 +186,11 @@ void update_states(){
     
     if(pressed_esc && game.cursor_holding){//dump whatever you have
         pressed_esc = 0; //use up action if holding
-        if(game.buying){
-            dump_cursor();
-           
-        }else{
+        if(!game.buying){
             paste_snapshot();
             clear_snapshot();
         }
+    	dump_cursor();
     }
         
     
@@ -202,7 +208,7 @@ void update_states(){
         case STATE_SHOP_MENU: //shop menu has 4 categories: conveyors, mines, upgraders, furnaces
             game.cursor_locked = FALSE;
             game.shop_index = 0;
-            if(pressed(ESCAPE)){
+            if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
             } else if(pressed(W_KEY)){
@@ -218,7 +224,7 @@ void update_states(){
             break;  
         case STATE_SHOP: //shop menu for individual categories, index through
             game.cursor_locked = FALSE;
-            if(pressed(ESCAPE)){
+            if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP_MENU;
             }else if(pressed(W_KEY)){
@@ -290,7 +296,7 @@ void update_right_text(){
 
 int fill_cursor(component_t filler){
 
-    if(game.cursor_holding) return -1;
+    if(game.cursor_holding) return 0;
     game.cursor_height = filler.height;
     game.cursor_width = filler.width;
     for(int i = 0; i<filler.height; i++){
@@ -311,33 +317,26 @@ int fill_cursor(component_t filler){
 }
 
 int place_cursor(){
-	printf("PLACE\n");
 
-    if(!game.cursor_holding) return -1;
+    if(!game.cursor_holding) return 0;
 
     uint8_t x = game.cursor_x;
     uint8_t y = game.cursor_y;
 
     for(int i = 0; i<game.cursor_width; i++){
         for(int j = 0; j<game.cursor_height;j++){
-        	printf("%d, %d\n",game.occupied_board[x+i][y+j],game.cursor[i][j].type);
-            if(game.occupied_board[x+i][y+j] != 0 && game.cursor[i][j].type != BLANK_T) return -1;
+            if(game.occupied_board[x+i][y+j] != 0 && game.cursor[i][j].type != BLANK_T) return 0;
         }
     }
-    printf("PLACE\n");
     for(int i = 0; i<game.cursor_width; i++){
         for(int j = 0; j<game.cursor_height;j++){
             if(game.cursor[i][j].type != BLANK_T){
-                printf("PLACE\n");
                 game.board[x+i][y+j] = game.cursor[i][j];
                 game.occupied_board[x+i][y+j] = game.occup_code;
-                printf("%d %d",game.occup_code,game.occupied_board[x+i][y+j]);
             }
         }
     }
-    printf("%d",game.occupied_board[x][y]);
     game.occup_code++;
-
     if(game.occup_code == 0){
         game.occup_code++;
     }
@@ -345,8 +344,6 @@ int place_cursor(){
     return 1;
 }
 int dump_cursor(){
-	printf("DUMP\n");
-
     for(int i = 0; i<5; i++){
         for(int j = 0; j<5; j++){
             game.cursor[i][j] = (block_t){0};
@@ -360,58 +357,74 @@ int dump_cursor(){
     return 1;
 }
 
+uint8_t flood_board[50][50];
+
 component_t cut_snapshot(int x, int y){
-    if(game.occupied_board[x][y] == 0) return (component_T){0};
+    if(game.occupied_board[x][y] == 0) return (component_t){0};
     int key = game.occupied_board[x][y];
+    for(int i = 0; i<50; i++){
+    	for(int j = 0; j<50; j++){
+    		flood_board[i][j] = 0;
+    	}
+    }
     flood_select(x, y, key); //grab component and put it into snapshot
     component_t toReturn;
     //time to copy things into the cursor
-    int min_x = 0;
-    int min_y = 0;
-    int max_width = 0;
-    int max_height = 0;
+    int min_x = 51;
+    int min_y = 51;
 
     for(int i = 0; i< 50; i++){
-        int cur_height = 0;
+        int height_start = -1;
+        int height_end = -1;
         for(int j = 0; j<50; j++){
-            if(game.snapshot[i][j] != {0}){
+            if(game.snapshot[i][j].type != BLANK_T){
                 if(i < min_x){
                     min_x = i;
                 }
                 if(j < min_y){
                     min_y = j;
                 }
-                cur_height++;
-            }
-            if(cur_height > max_height){
-                max_height = cur_height;
+                if(width_start == -1){
+                    height_start = j;
+                    height_end = j;
+                }else{
+                	height_end = j;
+                }
             }
         }
     }
     
     for(int i = min_y; i<min_y+5; i++){
-        int cur_width = 0;
+        int width_start = -1;
+        int width_end = -1;
         for(int j = min_x; j<min_x+5; j++){
-            toReturn.blocks[j-min_x][i-min_y] = game.snapshot[i][j];
-            if(game.snapshot[j][i] != {0}){
-                cur_width++;
-            }
-            if(cur_width > max_width){
-                max_width = cur_width;
+            toReturn.blocks[j-min_x][i-min_y] = game.snapshot[j][i];
+            if(game.snapshot[j][i].type != BLANK_T){
+            	if(width_start == -1){
+            		width_start = j;
+            		width_end = j;
+            	}else{
+            		width_end = j;
+            	}
             }
         }
     }
-    toReturn.width = max_width;
-    toReturn.height = max_height;
+    toReturn.width = width_start-width_end+1;
+    toReturn.height = height_start-height_end+1;
     update_board(0,0,49,49);
     return toReturn;
 }
 
-int flood_select(int x, int y. int key){
+int flood_select(int x, int y, int key){
     if(x < 0 || x > 49 || y < 0 || y > 49) return -1;
+    if(flood_board[x][y] == 1) return -1;
+    flood_board[x][y] = 1;
     if(game.occupied_board[x][y] == key){//take the board data into snapshot
-        snapshot[x][y] = board[x][y];
-        board[x][y] = {0};
+        game.snapshot[x][y] = game.board[x][y];
+        game.board[x][y] = (block_t){0};
+        game.occupied_board[x][y] = 0;
+    }else{
+    	return -1;
     }
     flood_select(x-1,y,key);
     flood_select(x+1,y,key);
@@ -424,13 +437,12 @@ int paste_snapshot(){
     int changed = 0;
     for(int i = 0; i<50; i++){
         for(int j = 0; j< 50; j++){
-            if(game.snapshot[i][j] != 0){
+            if(game.snapshot[i][j].type != BLANK_T){
                 changed = 1;
                 game.board[i][j] = game.snapshot[i][j];
             }
         }
     }
-
     update_board(0,0,49,49);
     return changed;
 }
@@ -438,8 +450,9 @@ int paste_snapshot(){
 int clear_snapshot(){
     for(int i = 0; i<50; i++){
         for(int j = 0; j< 50; j++){
-            game.snapshot[i][j] = (component_t){0};
+            game.snapshot[i][j] = (block_t){0};
         }
     }
+
     return 1;
 }

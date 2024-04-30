@@ -10,8 +10,9 @@
 #include "states.h"
 #include "components.h"
 #include "shop_text.h"
+#include <xgpio.h>
 
-
+extern uint8_t flood_board [50][50];
 
 struct GAME_INFO {
 	uint64_t sold_ores[100]; //updated every game loop
@@ -64,7 +65,7 @@ int fill_cursor(component_t filler);
 int place_cursor();
 int dump_cursor();
 
-int flood_select(int x, int y);
+int flood_select(int x, int y, int key);
 
 component_t cut_snapshot(int x, int y);
 int paste_snapshot();
