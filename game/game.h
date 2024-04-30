@@ -11,6 +11,7 @@
 #include "components.h"
 #include "shop_text.h"
 #include <xgpio.h>
+#include "cursor.h"
 
 extern uint8_t flood_board [50][50];
 
@@ -61,13 +62,5 @@ void update_states();
 
 void update_right_text();
 
-int fill_cursor(component_t filler);
-int place_cursor();
-int dump_cursor();
 
-int flood_select(int x, int y, int key);
-
-component_t cut_snapshot(int x, int y);
-int paste_snapshot();
-int clear_snapshot();
 #endif
