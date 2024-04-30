@@ -223,7 +223,7 @@ void update_states(){
             } else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.shop_menu_index = ((game.shop_menu_index+1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
-            } else if(pressed(B_KEY)){
+            } else if(pressed(ENTER)){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP;
             }
@@ -239,7 +239,7 @@ void update_states(){
             }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
-            }else if(pressed(B_KEY)){
+            }else if(pressed(ENTER)){
                 if(!game.cursor_holding){
                     game.buying = 1;
                     fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
@@ -248,7 +248,7 @@ void update_states(){
             break;
         case STATE_CTRL:
             game.cursor_locked = TRUE;
-            if(pressed(ESCAPE)){
+            if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
             }
