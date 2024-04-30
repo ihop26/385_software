@@ -1,7 +1,16 @@
-#ifndef __COMPONENTS
-#define __COMPONENTS
+#ifndef __COMPONENTS__
+#define __COMPONENTS__
 
-#include "game.h"
+
+#define BLANK_T 0
+#define FURNACE_T 1
+#define UPGRADER_T 2
+#define SPAWNER_T 3
+#define CONVEYOR_T 4
+#define CURSOR_T 5
+
+
+#include "xil_types.h"
 
 typedef struct
 {
@@ -15,17 +24,19 @@ typedef struct
     uint8_t width;
     uint8_t height;
     block_t blocks[5][5];
-    
+
 }component_t;
 
-component_t shop_library [MAX_SHOP_CATEGORIES][MAX_SHOP_ITEMS];
+extern component_t shop_library [4][4];
 
-uint32_t conveyor_library[4];
-uint32_t upgrader_library[4];
-uint32_t furnace_library[4];
+extern uint32_t conveyor_library[4];
+extern uint32_t upgrader_library[4];
+extern uint32_t furnace_library[4];
 
-uint16_t visual_library[4];
+extern uint16_t visual_library[4];
 
+uint32_t get_functional(block_t block);
+uint16_t get_visual(block_t block);
 
 
 void initialize_shop();

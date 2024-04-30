@@ -1,5 +1,5 @@
-#ifndef __GAME
-#define __GAME
+#ifndef __GAME__H
+#define __GAME__H
 
 #define MAX_SHOP_ITEMS 4
 #define MAX_SHOP_CATEGORIES 4
@@ -9,6 +9,8 @@
 #include "hdmi_text_controller.h"
 #include "states.h"
 #include "components.h"
+#include "shop_text.h"
+
 
 
 struct GAME_INFO {
@@ -52,11 +54,9 @@ void update_cursor();
 
 void handle_input(uint8_t buf [4]);
 
-void update_board();
+void update_board(int start_x, int start_y, int end_x, int end_y);
 
 void update_states();
-
-void update_visual(int start_x, int start_y, int end_x, int end_y);
 
 void update_right_text();
 

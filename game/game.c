@@ -1,6 +1,5 @@
 #include "game.h"
-#include "shop_text.h"
-#include "components.h"
+
 struct GAME_INFO game;
 
 /////////////////////////////////////////////////////////////
@@ -25,17 +24,20 @@ struct GAME_INFO game;
 */
 void setup_game(){
     setup_keyboard();
+    initialize_shop();
+
     for(int i = 0; i<50; i++){
         for(int j = 0; j<50; j++){
-            game.snapshot[i][j] = 0;
-            game.board[i][j] = 0;
+            game.snapshot[i][j] = (block_t){0};
+            game.board[i][j] =  (block_t){0};
+            game.occupied_board[i][j] = 0;
         }
         game.sold_ores[i*2] = 0;
         game.sold_ores[i*2 + 1] = 0;
     }
     for(int i = 0; i<5; i++){
         for(int j = 0; j<5; j++){
-            game.cursor[i][j] = {};
+            game.cursor[i][j] = (block_t){0};
         }
     }
     game.buying = 0;
@@ -45,19 +47,18 @@ void setup_game(){
     game.cursor_y = 0;
     game.cursor_width = 1;
     game.cursor_height = 1;
-    game.cursor[0][0] = {5,0,0}
+    game.cursor[0][0] = (block_t){5,0,0};
     game.money = 0;
     game.state = STATE_MENU;
     game.shop_index = 0;
     game.shop_menu_index = 0;
-
     //todo set palette
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
     setColorPalette(2, 0x0, 0x8, 0x0);
     setColorPalette(13, 0xF,0x6,0xF);
     update_right_text();
-    update_visual(0,0,49,49);
+    update_board(0,0,49,49);
     //todo make a basic startup screen
 }
 
@@ -78,12 +79,12 @@ void handle_input(uint8_t buf [4]){
 }
 
 /*
-    UPDATE_VISUAL
+    UPDATE_BOARD
     inputs: a rectangle of area to update
     outputs: none
     effects: rewrites the visual BRAM within the rectangle, used to selectively update the screen
 */
-void update_visual(int start_x, int start_y, int end_x, int end_y){
+void update_board(int start_x, int start_y, int end_x, int end_y){
     //todo updates from startx->endx and starty->endy
     if(start_x > end_x || start_y > end_y){
         return;
@@ -99,22 +100,21 @@ void update_visual(int start_x, int start_y, int end_x, int end_y){
         for(j = start_y; j<=end_y; j++){
             //(if cursor_visual[i-cursor_x][j-cursor_y] != 0) draw cursor @ ij
             //else draw visual board[i][j] @ ij
-            if((game.cursor_x <= i) && (game.cursor_y <= j) && (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
+            if((i < game.cursor_x + game.cursor_width) && (i >= game.cursor_x)
+            		&& (j < game.cursor_y + game.cursor_height) && (j >= game.cursor_y)
+					&& (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
                 uint16_t visual = get_visual(game.cursor[i-game.cursor_x][j-game.cursor_y]);
                 setVisual(visual, i, j);
             }else{
                 uint16_t visual = get_visual(game.board[i][j]);
                 setVisual(visual, i, j);
             }
+            uint32_t board = get_functional(game.board[i][j]);
+            setBoard(board,i,j);
         }
     }
 }
-/*
-    UPDATE_BOARD
-*/
-void update_board(){
-    //todo update dynamic stuff
-}
+
 
 /*
     UPDATE_CURSOR
@@ -138,7 +138,7 @@ void update_cursor(){
     if(pressed(LEFT) || held(LEFT)){
         if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width-1) < 50) game.cursor_x--;
     }
-    update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
+    update_board((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
 }
 /*
     UPDATE_STATES
@@ -187,8 +187,9 @@ void update_states(){
                     right_bar_changed = 1;
                     game.state = STATE_SHOP_MENU;
                 }else{
-                    if(buying){
+                    if(game.buying){
                         //todo clear cursor and return money
+                    	dump_cursor();
                     }else{
                         //todo return moved component back
                     }
@@ -201,7 +202,7 @@ void update_states(){
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(B_KEY)){
                 if(!game.cursor_holding){
-                    buying = 1;
+                    game.buying = 1;
                     fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
                 }else{
                     //todo flash text cursor full
@@ -275,6 +276,7 @@ void update_right_text(){
 }
 
 int fill_cursor(component_t filler){
+	printf("FILL\n");
     if(game.cursor_holding) return -1;
     game.cursor_height = filler.height;
     game.cursor_width = filler.width;
@@ -283,43 +285,57 @@ int fill_cursor(component_t filler){
             game.cursor[i][j] = filler.blocks[i][j];
         }
     }
+	printf("%d %d %d\n", filler.height,filler.width,filler.blocks[0][0].type);
+	printf("%d %d %d\n", game.cursor_height,game.cursor_width,game.cursor[0][0].type);
+
     game.cursor_holding = 1;
+    update_board(0,0,49,49);
+
 }
 
 int place_cursor(){
+	printf("PLACE\n");
+
     if(!game.cursor_holding) return -1;
+
     uint8_t x = game.cursor_x;
     uint8_t y = game.cursor_y;
 
     for(int i = 0; i<game.cursor_width; i++){
         for(int j = 0; j<game.cursor_height;j++){
-            if(occupied_board[x+i][y+j] != 0 && game.cursor[i][j].type != BLANK_T) return -1;
+        	printf("%d, %d\n",game.occupied_board[x+i][y+j],game.cursor[i][j].type);
+            if(game.occupied_board[x+i][y+j] != 0 && game.cursor[i][j].type != BLANK_T) return -1;
         }
     }
-
-    for(int i = 0 i<game.cursor_width; i++){
+    printf("PLACE\n");
+    for(int i = 0; i<game.cursor_width; i++){
         for(int j = 0; j<game.cursor_height;j++){
-            if(game.cursor[x+i][y+j].type != BLANK_T){
+            if(game.cursor[i][j].type != BLANK_T){
+                printf("PLACE\n");
                 game.board[x+i][y+j] = game.cursor[i][j];
-                game.occupied_board[x+i][x+j] = game.occup_code;
+                game.occupied_board[x+i][y+j] = game.occup_code;
+                printf("%d %d",game.occup_code,game.occupied_board[x+i][y+j]);
             }
         }
     }
-
+    printf("%d",game.occupied_board[x][y]);
     game.occup_code++;
 
     if(game.occup_code == 0){
         game.occup_code++;
     }
+    update_board(0,0,49,49);
     return 1;
 }
 int dump_cursor(){
+	printf("DUMP\n");
+
     for(int i = 0; i<5; i++){
         for(int j = 0; j<5; j++){
-            game.cursor[i][j] = {0};
+            game.cursor[i][j] = (block_t){0};
         }
     }
-    game.cursor[0][0] = {5,0,0};
+    game.cursor[0][0] = (block_t){5,0,0};
     game.cursor_holding = 0;
     game.cursor_height = 1;
     game.cursor_width = 1;
