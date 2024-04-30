@@ -4,8 +4,8 @@ struct GAME_INFO game;
 
 /////////////////////////////////////////////////////////////
 /*         TODO LIST                                       */
-/*       1. add states to the game                         */
-/*       2. add simple shop functionality                  */
+/*       1. add states to the game      DONE               */
+/*       2. add simple shop functionality   DONE           */
 /*       3. add ability to select & sell components        */
 /*       4. when selecting components can move it around   */
 /*       5. money counter                                  */
@@ -57,6 +57,11 @@ void setup_game(){
 	setColorPalette(1, 0x8, 0x8, 0x8);
     setColorPalette(2, 0x0, 0x8, 0x0);
     setColorPalette(13, 0xF,0x6,0xF);
+
+    setColorPalette(14, 0x8, 0x0, 0x0);
+    setColorPalette(15, 0x0, 0x8, 0x0);
+
+
     update_right_text();
     update_board(0,0,49,49);
     //todo make a basic startup screen
@@ -104,6 +109,11 @@ void update_board(int start_x, int start_y, int end_x, int end_y){
             		&& (j < game.cursor_y + game.cursor_height) && (j >= game.cursor_y)
 					&& (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
                 uint16_t visual = get_visual(game.cursor[i-game.cursor_x][j-game.cursor_y]);
+                if(game.occupied_board[i][j] == 0){//set green
+                    visual = (visual & 0xFF00) | 0xF0;
+                }else{//set red if overlap
+                    visual = (visual & 0xFF00) | 0xE0;
+                }
                 setVisual(visual, i, j);
             }else{
                 uint16_t visual = get_visual(game.board[i][j]);
@@ -148,10 +158,36 @@ void update_cursor(){
 */
 void update_states(){
     int right_bar_changed = 0;
-    if(!game.cursor_locked && game.cursor_holding && pressed(SPACE)){
-        place_cursor();
-        dump_cursor();
+    int pressed_space = pressed(SPACE);
+    int pressed_esc = pressed(ESCAPE);
+
+    if(pressed_space && !game.cursor_locked){
+        if(game.cursor_holding){//try to place
+            if(place_cursor()){
+                dump_cursor();
+                pressed_space = 0; // succeeded (use up action)
+            } 
+        }else{//try to grab
+            component_t cut = cut_snapshot(game.cursor_x,game.cursor_y);
+            if(cut != (component_t){0}){
+                fill_cursor(cut);
+                pressed_space = 0; //succeeded (use up action)
+            }
+        }
     }
+    
+    if(pressed_esc && game.cursor_holding){//dump whatever you have
+        pressed_esc = 0; //use up action if holding
+        if(game.buying){
+            dump_cursor();
+           
+        }else{
+            paste_snapshot();
+            clear_snapshot();
+        }
+    }
+        
+    
     switch(game.state){
         case STATE_MENU:
             game.cursor_locked = TRUE;
@@ -183,17 +219,8 @@ void update_states(){
         case STATE_SHOP: //shop menu for individual categories, index through
             game.cursor_locked = FALSE;
             if(pressed(ESCAPE)){
-                if(!game.cursor_holding){
-                    right_bar_changed = 1;
-                    game.state = STATE_SHOP_MENU;
-                }else{
-                    if(game.buying){
-                        //todo clear cursor and return money
-                    	dump_cursor();
-                    }else{
-                        //todo return moved component back
-                    }
-                }
+                right_bar_changed = 1;
+                game.state = STATE_SHOP_MENU;
             }else if(pressed(W_KEY)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index-1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
@@ -204,8 +231,6 @@ void update_states(){
                 if(!game.cursor_holding){
                     game.buying = 1;
                     fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
-                }else{
-                    //todo flash text cursor full
                 }
             } 
             break;
@@ -214,18 +239,6 @@ void update_states(){
             if(pressed(ESCAPE)){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
-            }
-            break;
-        case STATE_BUY:
-            game.cursor_locked = FALSE;
-            if(pressed(ESCAPE)){
-                game.state = STATE_SHOP;
-            }
-            break;
-        case STATE_SELECT:
-            game.cursor_locked = FALSE;
-            if(pressed(ESCAPE)){
-                game.state = STATE_SHOP;
             }
             break;
     }
@@ -276,7 +289,7 @@ void update_right_text(){
 }
 
 int fill_cursor(component_t filler){
-	printf("FILL\n");
+
     if(game.cursor_holding) return -1;
     game.cursor_height = filler.height;
     game.cursor_width = filler.width;
@@ -285,12 +298,16 @@ int fill_cursor(component_t filler){
             game.cursor[i][j] = filler.blocks[i][j];
         }
     }
-	printf("%d %d %d\n", filler.height,filler.width,filler.blocks[0][0].type);
-	printf("%d %d %d\n", game.cursor_height,game.cursor_width,game.cursor[0][0].type);
-
+    if(game.cursor_x + game.cursor_width > 49){
+        game.cursor_x = 49-game.cursor_width;
+    }
+    if(game.cursor_y + game.cursor_height > 49){
+        game.cursor_y = 49-game.cursor_height;
+    }
     game.cursor_holding = 1;
     update_board(0,0,49,49);
 
+    return 1;
 }
 
 int place_cursor(){
@@ -339,4 +356,90 @@ int dump_cursor(){
     game.cursor_holding = 0;
     game.cursor_height = 1;
     game.cursor_width = 1;
+    update_board(0,0,49,49);
+    return 1;
+}
+
+component_t cut_snapshot(int x, int y){
+    if(game.occupied_board[x][y] == 0) return (component_T){0};
+    int key = game.occupied_board[x][y];
+    flood_select(x, y, key); //grab component and put it into snapshot
+    component_t toReturn;
+    //time to copy things into the cursor
+    int min_x = 0;
+    int min_y = 0;
+    int max_width = 0;
+    int max_height = 0;
+
+    for(int i = 0; i< 50; i++){
+        int cur_height = 0;
+        for(int j = 0; j<50; j++){
+            if(game.snapshot[i][j] != {0}){
+                if(i < min_x){
+                    min_x = i;
+                }
+                if(j < min_y){
+                    min_y = j;
+                }
+                cur_height++;
+            }
+            if(cur_height > max_height){
+                max_height = cur_height;
+            }
+        }
+    }
+    
+    for(int i = min_y; i<min_y+5; i++){
+        int cur_width = 0;
+        for(int j = min_x; j<min_x+5; j++){
+            toReturn.blocks[j-min_x][i-min_y] = game.snapshot[i][j];
+            if(game.snapshot[j][i] != {0}){
+                cur_width++;
+            }
+            if(cur_width > max_width){
+                max_width = cur_width;
+            }
+        }
+    }
+    toReturn.width = max_width;
+    toReturn.height = max_height;
+    update_board(0,0,49,49);
+    return toReturn;
+}
+
+int flood_select(int x, int y. int key){
+    if(x < 0 || x > 49 || y < 0 || y > 49) return -1;
+    if(game.occupied_board[x][y] == key){//take the board data into snapshot
+        snapshot[x][y] = board[x][y];
+        board[x][y] = {0};
+    }
+    flood_select(x-1,y,key);
+    flood_select(x+1,y,key);
+    flood_select(x,y-1,key);
+    flood_select(x,y+1,key);
+    return 1;
+}
+
+int paste_snapshot(){
+    int changed = 0;
+    for(int i = 0; i<50; i++){
+        for(int j = 0; j< 50; j++){
+            if(game.snapshot[i][j] != 0){
+                changed = 1;
+                game.board[i][j] = game.snapshot[i][j];
+            }
+        }
+    }
+
+    update_board(0,0,49,49);
+    return changed;
+}
+
+int clear_snapshot(){
+    for(int i = 0; i<50; i++){
+        for(int j = 0; j< 50; j++){
+            game.snapshot[i][j] = (component_t){0};
+        }
+    }
+    return 1;
 }

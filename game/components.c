@@ -66,10 +66,10 @@ void initialize_shop(){
     upgrader_library[2] = 0; // up 
     upgrader_library[3] = 0; // down
 
-    visual_library[0] = 0xC120; //right conveyor
-    visual_library[1] = 0xC320; //left conveyor
-    visual_library[2] = 0xC420; //up conveyor
-    visual_library[3] = 0xC220;//down conveyor
+    visual_library[0] = 0xC110; //right conveyor
+    visual_library[1] = 0xC310; //left conveyor
+    visual_library[2] = 0xC410; //up conveyor
+    visual_library[3] = 0xC210;//down conveyor
 
 
     shop_library[0][0] = (component_t){

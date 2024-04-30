@@ -61,9 +61,12 @@ void update_states();
 void update_right_text();
 
 int fill_cursor(component_t filler);
-
 int place_cursor();
-
 int dump_cursor();
 
+int flood_select(int x, int y);
+
+component_t cut_snapshot(int x, int y);
+int paste_snapshot();
+int clear_snapshot();
 #endif
