@@ -6,11 +6,11 @@ struct GAME_INFO game;
 /*         TODO LIST                                       */
 /*       1. add states to the game      DONE               */
 /*       2. add simple shop functionality   DONE           */
-/*       3. add ability to select & sell components        */
-/*       4. when selecting components can move it around   */
-/*       5. money counter                                  */
-/*       6. rotation of simple components                  */
-/*       7. add support for composite components           */
+/*       3. add ability to select & delete components (ALMSOT)      */
+/*       4. when selecting components can move it around  DONE  */
+/*       5. money counter                                  TODAY*/
+/*       6. rotation of simple components                 DONE */
+/*       7. add support for composite components           DONE*/
 /*            (figure out a good way to store this)        */
 /*       8. prestige                                       */
 /*       9. polish game                                    */
