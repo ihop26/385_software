@@ -9,6 +9,7 @@ uint16_t visual_library[4];
 
 block_t rotate_block(block_t block){
     block_t rotated = (block_t){0};
+    rotated.type = block.type;
     if(block.type == BLANK_T) return rotated;
     if(block.type == CONVEYOR_T){
         rotated.functional_index = (block.functional_index&0xFC)|((block.functional_index+1)&0x3);
