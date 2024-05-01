@@ -212,7 +212,7 @@ void initialize_shop(){
        		{{0},{0},{0},{0},{0}}
        		}
      };
-    //fast mini launcher todo
+    //fast mini launcher
     shop_library[0][7] = (component_t){
            	1,3,
        		{
