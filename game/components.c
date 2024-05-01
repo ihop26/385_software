@@ -74,6 +74,11 @@ void initialize_shop(){
     conveyor_library[2] = 0x3045; // left
     conveyor_library[3] = 0x3081; // down
 
+    conveyor_library[4] = 0x1005; // right
+    conveyor_library[5] = 0x1881; // up
+    conveyor_library[6] = 0x1045; // left
+    conveyor_library[7] = 0x1081; // down
+
     furnace_library[0] = 0; // right
     furnace_library[1] = 0; // left
     furnace_library[2] = 0; // up 
@@ -93,19 +98,19 @@ void initialize_shop(){
     shop_library[0][0] = (component_t){
     	5,2,
 		{
-		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}}
+		{{CONVEYOR_T,4,0},{CONVEYOR_T,4,0},{0},{0},{0}},
+		{{CONVEYOR_T,4,0},{CONVEYOR_T,4,0},{0},{0},{0}},
+		{{CONVEYOR_T,4,0},{CONVEYOR_T,4,0},{0},{0},{0}},
+		{{CONVEYOR_T,4,0},{CONVEYOR_T,4,0},{0},{0},{0}},
+		{{CONVEYOR_T,4,0},{CONVEYOR_T,4,0},{0},{0},{0}}
 		}
     };
 
     shop_library[0][1] = (component_t){
         	3,3,
     		{
-    		{{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{CONVEYOR_T,0,0},{0},{0}},
-    		{{0},{0},{CONVEYOR_T,0,0},{0},{0}},
+    		{{CONVEYOR_T,7,3},{CONVEYOR_T,7,3},{CONVEYOR_T,4,0},{0},{0}},
+    		{{0},{0},{CONVEYOR_T,4,0},{0},{0}},
     		{{0},{0},{CONVEYOR_T,0,0},{0},{0}},
     		{{0},{0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}}
