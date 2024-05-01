@@ -1,8 +1,8 @@
 #include "components.h"
 
 component_t shop_library [4][4];
-uint32_t conveyor_library[4];
-uint32_t upgrader_library[4];
+uint32_t conveyor_library[16];
+uint32_t upgrader_library[16];
 uint32_t furnace_library[4];
 
 uint16_t visual_library[4];
