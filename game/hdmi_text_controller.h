@@ -121,5 +121,6 @@ void setColorPalette (uint8_t color, uint8_t red, uint8_t green, uint8_t blue); 
 void setVisual(uint16_t code, int x, int y);
 void setBoard(uint32_t code, int x, int y);
 void setMine(uint8_t index, uint64_t ore);
+int getOre(int index, uint8_t* bytes);
 
 #endif // HDMI_TEXT_CONTROLLER_H

@@ -62,5 +62,7 @@ void update_states();
 
 void update_right_text();
 
+void update_money();
+
 
 #endif

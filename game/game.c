@@ -299,3 +299,14 @@ void update_right_text(){
             break;
     }
 }
+void update_money(){
+	uint8_t ore[8];
+	for(int i = 0; i<100; i++){
+		if(!getOre(i,ore)) continue;
+		uint32_t top = (ore[7]<<24) | (ore[6] << 16) | (ore[5] << 8) | ore[4];
+		uint32_t base = ((top << 1) & 0xFFFF0000) >> 16;
+		uint32_t multiplier = ((top << 17) & 0xFF000000) >> 24;
+		uint32_t exponent = ((top << 25) & 0xF8000000) >> 27;
+		game.money += (base*multiplier) << exponent;
+	}
+}
