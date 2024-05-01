@@ -85,15 +85,30 @@ void initialize_shop(){
     furnace_library[2] = 0; // up 
     furnace_library[3] = 0; // down
 
-    upgrader_library[0] = 0; // right
-    upgrader_library[1] = 0; // up
-    upgrader_library[2] = 0; // left
-    upgrader_library[3] = 0; // down
-
+    upgrader_library[0] = 0xf0110006; // right
+    upgrader_library[1] = 0xf0110882; // up
+    upgrader_library[2] = 0xf0110046; // left
+    upgrader_library[3] = 0xf0110082; // down
+    //fast
     visual_library[0] = 0xC110; //right conveyor
     visual_library[1] = 0xC410; //up conveyor
     visual_library[2] = 0xC310; //left conveyor
     visual_library[3] = 0xC210;//down conveyor
+    //slow
+    visual_library[4] = 0x4110; //right conveyor
+    visual_library[5] = 0x4410; //up conveyor
+    visual_library[6] = 0x4310; //left conveyor
+    visual_library[7] = 0x4210;//down conveyor
+
+    //slow palette 2
+    visual_library[8] = 0x4120; //right conveyor
+    visual_library[9] = 0x4420; //up conveyor
+    visual_library[10] = 0x4320; //left conveyor
+    visual_library[11] = 0x4220;//down conveyor
+
+
+
+    visual_library[15] = 0x0002;
 
 
     shop_library[0][0] = (component_t){
@@ -138,10 +153,21 @@ void initialize_shop(){
        		}
      };
 
+    shop_library[1][0] = (component_t){
+           	1,1,
+       		{
+       		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
+       		{{UPGRADER_T,0,8},{0},{0},{0},{0}},
+       		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}}
+       		}
+     };
+
     shop_library[2][0] = (component_t){
            	1,1,
        		{
-       		{{FURNACE_T,0,1},{0},{0},{0},{0}},
+       		{{FURNACE_T,0,15},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},

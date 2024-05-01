@@ -40,7 +40,7 @@ void setup_game(){
             game.cursor[i][j] = (block_t){0};
         }
     }
-    uint64_t initial_mine = 0x0001800100001040;
+    uint64_t initial_mine = 0x0000800100001040;
     setMine(0,initial_mine);
     game.buying = 0;
     game.cursor_holding = 0;
@@ -313,4 +313,20 @@ void update_money(){
 		xil_printf("%d: %d %d %d\n",i,base,multiplier,exponent);
 	}
 	xil_printf("%ld\n",game.money);
+    setBottomText(game.m_string, 0, 2, 0, 1);
+
+}
+
+void update_m_string(){
+    uint64_t mon = game.money;
+    int ctr = 0;
+    for(int i = 0; i<20; i++){
+        game.m_string[i] = ' ';
+    }
+    game.m_string[20] = '\0';
+    while(mon > 0 && ctr < 20){
+        game.m_string[19-ctr] = mon%10;
+        mon = mon/10;
+        ctr++;
+    }
 }

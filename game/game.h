@@ -19,6 +19,7 @@ struct GAME_INFO {
 	uint64_t sold_ores[100]; //updated every game loop
 	uint8_t state; //like in shop, buying, selling, moving etc
     uint64_t money;
+    char m_string[21];
     
     uint8_t cursor_locked; //lock cursor in CTRL/MENU states
 
@@ -63,6 +64,8 @@ void update_states();
 void update_right_text();
 
 void update_money();
+
+void update_m_string();
 
 
 #endif
