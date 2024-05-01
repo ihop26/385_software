@@ -13,12 +13,12 @@ block_t rotate_block(block_t block){
     if(block.type == BLANK_T) return rotated;
     if(block.type == CONVEYOR_T){
         rotated.functional_index = (block.functional_index&0xFC)|((block.functional_index+1)&0x3);
-        rotated.visual_index = (block.visual_index&0xFC)|((block.visual_index+1)&0x3);
+        rotated.visual_index = (block.visual_index&0xFC)|((block.visual_index+1)&0x03);
     } else if(block.type == FURNACE_T){
         rotated = block;
     } else if(block.type == UPGRADER_T){
         rotated.functional_index = (block.functional_index&0xFC)|((block.functional_index+1)&0x3);
-        rotated.visual_index = (block.visual_index&0xFC)|((block.visual_index+1)&0x3);
+        rotated.visual_index = (block.visual_index&0xFC)|((block.visual_index+1)&0x03);
     } else if(block.type == SPAWNER_T){
 
     }
