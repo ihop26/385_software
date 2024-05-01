@@ -73,22 +73,22 @@ void initialize_shop(){
 
 
     shop_library[0][0] = (component_t){
-    	5,1,
+    	5,2,
 		{
-		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-		{{CONVEYOR_T,0,0},{0},{0},{0},{0}}
+		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
+		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
+		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
+		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
+		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}}
 		}
     };
 
     shop_library[0][1] = (component_t){
-        	2,2,
+        	3,3,
     		{
-    		{{CONVEYOR_T,0,0},{CONVEYOR_T,0,0},{0},{0},{0}},
-    		{{0},{CONVEYOR_T,0,0},{0},{0},{0}},
-    		{{0},{0},{0},{0},{0}},
+    		{{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{CONVEYOR_T,0,0},{0},{0}},
+    		{{0},{0},{CONVEYOR_T,0,0},{0},{0}},
+    		{{0},{0},{CONVEYOR_T,0,0},{0},{0}},
     		{{0},{0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}}
     		}

@@ -85,6 +85,8 @@ void handle_input(uint8_t buf [4]){
     update_cursor();
     //TODO UPDATE STATES ETC
     update_states();
+
+    update_money();
 }
 
 /*
@@ -308,5 +310,7 @@ void update_money(){
 		uint32_t multiplier = ((top << 17) & 0xFF000000) >> 24;
 		uint32_t exponent = ((top << 25) & 0xF8000000) >> 27;
 		game.money += (base*multiplier) << exponent;
+		xil_printf("%d: %d %d %d\n",i,base,multiplier,exponent);
 	}
+	xil_printf("%ld\n",game.money);
 }
