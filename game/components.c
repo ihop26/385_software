@@ -69,17 +69,18 @@ uint32_t get_functional(block_t block){
 
 
 void initialize_shop(){
+    //fast
     conveyor_library[0] = 0x3005; // right
     conveyor_library[1] = 0x3881; // up
     conveyor_library[2] = 0x3045; // left
     conveyor_library[3] = 0x3081; // down
-
+    //slow
     conveyor_library[4] = 0x1005; // right
     conveyor_library[5] = 0x1881; // up
     conveyor_library[6] = 0x1045; // left
     conveyor_library[7] = 0x1081; // down
 
-    furnace_library[0] = 0; // right
+    furnace_library[0] = 0xF0100F03; // right
     furnace_library[1] = 0; // left
     furnace_library[2] = 0; // up 
     furnace_library[3] = 0; // down
@@ -136,6 +137,18 @@ void initialize_shop(){
        		{{0},{0},{0},{0},{0}}
        		}
      };
+
+    shop_library[2][0] = (component_t){
+           	1,1,
+       		{
+       		{{FURNACE_T,0,1},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}}
+       		}
+     };
+
 }
 
 

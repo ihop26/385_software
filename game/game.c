@@ -86,7 +86,7 @@ void handle_input(uint8_t buf [4]){
     //TODO UPDATE STATES ETC
     update_states();
 
-   // update_money();
+   update_money();
 }
 
 /*
