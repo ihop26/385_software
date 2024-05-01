@@ -277,7 +277,7 @@ void update_right_text(){
             for(int i = 0; i<4; i++){
                 foreground = 1;
                 if(game.shop_menu_index == i){
-                    foreground = 2;
+                    foreground = 15;
                 }
                 setRightText(shop_menu_items[i],0,(5+i*4),0,foreground);
             }
@@ -289,7 +289,7 @@ void update_right_text(){
             for(int i = 0; i<4; i++){
                 foreground = 1;
                 if(game.shop_index == i){
-                    foreground = 2;
+                    foreground = 15;
                 }
                 setRightText(shop_items[game.shop_menu_index][i],0,(5+i*4),0,foreground);
             }
@@ -309,7 +309,7 @@ void update_money(){
 		uint32_t base = ((top << 1) & 0xFFFF0000) >> 16;
 		uint32_t multiplier = ((top << 17) & 0xFF000000) >> 24;
 		uint32_t exponent = ((top << 25) & 0xF8000000) >> 27;
-		game.money += (base*multiplier) << exponent;
+		game.money += (base*(multiplier+1)) << exponent;
 		xil_printf("%d: %d %d %d\n",i,base,multiplier,exponent);
 	}
 	xil_printf("%ld\n",game.money);
