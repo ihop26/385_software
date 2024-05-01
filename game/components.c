@@ -85,10 +85,10 @@ void initialize_shop(){
     furnace_library[2] = 0; // up 
     furnace_library[3] = 0; // down
 
-    upgrader_library[0] = 0xf0110006; // right
-    upgrader_library[1] = 0xf0110882; // up
-    upgrader_library[2] = 0xf0110046; // left
-    upgrader_library[3] = 0xf0110082; // down
+    upgrader_library[0] = 0xf8110006; // right
+    upgrader_library[1] = 0xf8110882; // up
+    upgrader_library[2] = 0xf8110046; // left
+    upgrader_library[3] = 0xf8110082; // down
 
     //fast
     visual_library[0] = 0xC110; //right conveyor
