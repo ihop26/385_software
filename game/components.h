@@ -38,6 +38,7 @@ extern uint16_t visual_library[4];
 uint32_t get_functional(block_t block);
 uint16_t get_visual(block_t block);
 
+block_t rotate_block(block_t block);
 
 void initialize_shop();
 

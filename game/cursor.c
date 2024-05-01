@@ -83,14 +83,7 @@ int rotate_cursor(){
 
     for(int i = 0; i<rotated.width; i++){
         for(int j = 0; j<rotated.height; j++){
-            //cycle around the bottom 2 bits
-        	if(rotated.blocks[i][j].type != BLANK_T){
-        		rotated.blocks[i][j].functional_index =
-        				(rotated.blocks[i][j].functional_index&0xFC)|((rotated.blocks[i][j].functional_index+1)&0x3);
-        		rotated.blocks[i][j].visual_index =
-        		        (rotated.blocks[i][j].visual_index&0xFC)|((rotated.blocks[i][j].visual_index+1)&0x3);
-
-        	}
+            rotated.blocks[i][j] = rotate_block(rotated.blocks[i][j]);
         }
     }
     dump_cursor();

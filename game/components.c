@@ -7,6 +7,23 @@ uint32_t furnace_library[4];
 
 uint16_t visual_library[4];
 
+block_t rotate_block(block_t block){
+    block_t rotated = (block_t){0};
+    if(block.type == BLANK_T) return rotated;
+    if(block.type == CONVEYOR_T){
+        rotated.functional_index = (block.functional_index&0xFC)|((block.functional_index+1)&0x3);
+        rotated.visual_index = (block.visual_index&0xFC)|((block.visual_index+1)&0x3);
+    } else if(block.type == FURNACE_T){
+        rotated = block;
+    } else if(block.type == UPGRADER_T){
+        rotated.functional_index = (block.functional_index&0xFC)|((block.functional_index+1)&0x3);
+        rotated.visual_index = (block.visual_index&0xFC)|((block.visual_index+1)&0x3);
+    } else if(block.type == SPAWNER_T){
+
+    }
+    return rotated;
+}
+
 uint16_t get_visual(block_t block){
     if(block.type == CONVEYOR_T){
         return visual_library[block.visual_index];
