@@ -57,7 +57,7 @@ void setup_game(){
     //todo set palette
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
-    setColorPalette(2, 0x0, 0x8, 0x0);
+    setColorPalette(2, 0x0, 0x8, 0x8);
     setColorPalette(13, 0xF,0x6,0xF);
 
 
@@ -313,6 +313,7 @@ void update_money(){
 		xil_printf("%d: %d %d %d\n",i,base,multiplier,exponent);
 	}
 	xil_printf("%ld\n",game.money);
+    update_m_string();
     setBottomText(game.m_string, 0, 2, 0, 1);
 
 }
@@ -325,7 +326,7 @@ void update_m_string(){
     }
     game.m_string[20] = '\0';
     while(mon > 0 && ctr < 20){
-        game.m_string[19-ctr] = mon%10;
+        game.m_string[19-ctr] = mon%10 + 48;
         mon = mon/10;
         ctr++;
     }
