@@ -1,6 +1,8 @@
 #ifndef __SHOP_TEXT
 #define __SHOP_TEXT
 
+extern int shop_prices[4][8];
+
 extern unsigned char menu_text[30][31];
 
 extern unsigned char controls_text[30][31];

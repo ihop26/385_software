@@ -128,6 +128,12 @@ unsigned char menu_text[30][31] =
  "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\0",};
 
 
+  unsigned char menu_items [2][31] = 
+  {
+    "     Shop                     \0"
+    "     Controls                 \0"
+  };
+
   unsigned char shop_menu_items[4][31] =
 {"   CONVEYORS                 \0",
  "   UPGRADERS                 \0",
@@ -135,23 +141,46 @@ unsigned char menu_text[30][31] =
  "   MINES                     \0",};
 
 
-unsigned char shop_items [4][4][31] =
+unsigned char shop_items [4][8][31] =
 {
     {"1c                            \0",
      "2c                            \0",
      "3c                            \0",
-     "4c                            \0",},
+     "4c                            \0",
+     "5c                            \0",
+     "6c                            \0",
+     "7c                            \0",
+     "8c                            \0"},
     {"1u                            \0",
      "2u                            \0",
      "3u                            \0",
-     "4u                            \0",},
+     "4u                            \0",
+     "5u                            \0",
+     "6u                            \0",
+     "7u                            \0",
+     "8u                            \0"},
     {"1f                            \0",
      "2f                            \0",
      "3f                            \0",
-     "4f                            \0",},
+     "4f                            \0",
+     "5f                            \0",
+     "6f                            \0",
+     "7f                            \0",
+     "8f                            \0"},
     {"1m                            \0",
      "2m                            \0",
      "3m                            \0",
-     "4m                            \0",}
+     "4m                            \0",
+     "5m                            \0",
+     "6m                            \0",
+     "7m                            \0",
+     "8m                            \0"}
+};
+
+shop_prices[4][8] = {
+  {0,0,0,0,0,0,0,0},//conveyors
+  {0,0,0,0,0,0,0,0},//upgraders
+  {0,0,0,0,0,0,0,0},//furnaces
+  {0,0,0,0,0,0,0,0}//mines
 };
 

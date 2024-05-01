@@ -188,6 +188,8 @@ void update_states(){
         }
     }
     
+    //todo if pressed delete key, dump cursor & clear snapshot
+
     if(pressed_esc && game.cursor_holding){//dump whatever you have
         pressed_esc = 0; //use up action if holding
         if(!game.buying){
@@ -205,13 +207,20 @@ void update_states(){
     switch(game.state){
         case STATE_MENU:
             game.cursor_locked = TRUE;
-            if(pressed(B_KEY)){
+            if(pressed(W_KEY)){
                 right_bar_changed = 1;
-                game.state = STATE_SHOP_MENU;
-            } else if(pressed(C_KEY)){
+                game.menu_index = ((game.menu_index-1)+2)%2;
+            }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
-                game.state = STATE_CTRL;
-            } 
+                game.menu_index = ((game.menu_index+1)+2)%2;
+            }else if(pressed(ENTER)){
+                right_bar_changed = 1;
+                if(game.menu_index == 0){
+                    game.state = STATE_SHOP;
+                }else if(game.menu_index = =1){
+                    game.state = STATE_CTRL;
+                }
+            }
             break;
         case STATE_SHOP_MENU: //shop menu has 4 categories: conveyors, mines, upgraders, furnaces
             game.cursor_locked = FALSE;
@@ -242,8 +251,9 @@ void update_states(){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(ENTER)){
-                if(!game.cursor_holding){
+                if(!game.cursor_holding && game.money > shop_prices[game.shop_menu_index][game.shop_index]){
                     game.buying = 1;
+                    game.money -= shop_prices[game.shop_menu_index][game.shop_index];
                     fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
                 }
             } 
@@ -269,12 +279,19 @@ void update_right_text(){
             for(int i = 0; i<30; i++){
                 setRightText(menu_text[i],0,i,0,1);
             }
+            for(int i = 0; i<2; i++){
+                foreground = 1;
+                if(game.shop_menu_index == i){
+                    foreground = 15;
+                }
+                setRightText(shop_menu_items[i],0,(5+i*4),0,foreground);
+            }
             break;
         case STATE_SHOP_MENU:
             for(int i = 0; i<30; i++){
                 setRightText(shop_menu_text[i],0,i,0,1);
             }
-            for(int i = 0; i<4; i++){
+            for(int i = 0; i<MAX_SHOP_CATEGORIES; i++){
                 foreground = 1;
                 if(game.shop_menu_index == i){
                     foreground = 15;
@@ -286,12 +303,12 @@ void update_right_text(){
             for(int i = 0; i<30; i++){
                 setRightText(shop_text[i],0,i,0,1);
             }
-            for(int i = 0; i<4; i++){
+            for(int i = 0; i<MAX_SHOP_ITEMS; i++){
                 foreground = 1;
                 if(game.shop_index == i){
                     foreground = 15;
                 }
-                setRightText(shop_items[game.shop_menu_index][i],0,(5+i*4),0,foreground);
+                setRightText(shop_items[game.shop_menu_index][i],0,(5+i*3),0,foreground);
             }
             break;
         case STATE_CTRL:

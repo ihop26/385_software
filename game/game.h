@@ -1,7 +1,7 @@
 #ifndef __GAME__H
 #define __GAME__H
 
-#define MAX_SHOP_ITEMS 4
+#define MAX_SHOP_ITEMS 8
 #define MAX_SHOP_CATEGORIES 4
 
 #include "xil_types.h"
@@ -44,6 +44,8 @@ struct GAME_INFO {
     uint8_t buying;
     int shop_menu_index;
     int shop_index;
+
+    int menu_index;
     //todo add more game data
 };
 

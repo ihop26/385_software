@@ -8,7 +8,7 @@
 #define SPAWNER_T 3
 #define CONVEYOR_T 4
 #define CURSOR_T 5
-
+#define WALL_T 6
 
 #include "xil_types.h"
 
@@ -27,9 +27,9 @@ typedef struct
 
 }component_t;
 
-extern component_t shop_library [4][4];
+extern component_t shop_library [4][8];
 
-extern uint32_t conveyor_library[16];
+extern uint32_t conveyor_library[32];
 extern uint32_t upgrader_library[16];
 extern uint32_t furnace_library[4];
 
