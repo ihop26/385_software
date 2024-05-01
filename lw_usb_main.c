@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "platform.h"
 #include "lw_usb/GenericMacros.h"
 #include "lw_usb/GenericTypeDefs.h"
@@ -130,18 +129,6 @@ void get_input()
 		}
 }
 
-void getSold(int index){
-	int starting = 8*index;
-	uint8_t bytes[8];
-	for(int x = 0; x<8; x++){
-		bytes[x] = 	hdmi_ctrl->SELL[starting+x];
-		hdmi_ctrl->SELL[starting+x] = 0;
-	}
-	for(int x = 0; x<8; x++){
-		printf("%d ",bytes[7-x]);
-	}
-
-}
 int main() {
     init_platform();
     XGpio_Initialize(&Gpio_hex, XPAR_GPIO_USB_KEYCODE_DEVICE_ID);

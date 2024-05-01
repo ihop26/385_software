@@ -1,17 +1,16 @@
 #include "game.h"
-#include "shop_text.h"
 
 struct GAME_INFO game;
 
 /////////////////////////////////////////////////////////////
 /*         TODO LIST                                       */
-/*       1. add states to the game                         */
-/*       2. add simple shop functionality                  */
-/*       3. add ability to select & sell components        */
-/*       4. when selecting components can move it around   */
-/*       5. money counter                                  */
-/*       6. rotation of simple components                  */
-/*       7. add support for composite components           */
+/*       1. add states to the game      DONE               */
+/*       2. add simple shop functionality   DONE           */
+/*       3. add ability to select & delete components (ALMSOT)      */
+/*       4. when selecting components can move it around  DONE  */
+/*       5. money counter                                  TODAY*/
+/*       6. rotation of simple components                 DONE */
+/*       7. add support for composite components           DONE*/
 /*            (figure out a good way to store this)        */
 /*       8. prestige                                       */
 /*       9. polish game                                    */
@@ -25,33 +24,51 @@ struct GAME_INFO game;
 */
 void setup_game(){
     setup_keyboard();
+    initialize_shop();
+
     for(int i = 0; i<50; i++){
         for(int j = 0; j<50; j++){
-            game.cursor_visual[i][j] = 0;
-            game.visual_board[i][j] = 0;
-            game.functional_board[i][j] = 0;
+            game.snapshot[i][j] = (block_t){0};
+            game.board[i][j] =  (block_t){0};
+            game.occupied_board[i][j] = 0;
         }
         game.sold_ores[i*2] = 0;
         game.sold_ores[i*2 + 1] = 0;
     }
-    game.occup_code = 0;
+    for(int i = 0; i<5; i++){
+        for(int j = 0; j<5; j++){
+            game.cursor[i][j] = (block_t){0};
+        }
+    }
+    uint64_t initial_mine = 0x0001800100001040;
+    setMine(0,initial_mine);
+    game.buying = 0;
+    game.cursor_holding = 0;
+    game.occup_code = 1;
     game.cursor_x = 0;
     game.cursor_y = 0;
-    game.cursor_width = 0;
-    game.cursor_height = 0;
-    game.cursor_visual[0][0] = 0x0001;
+    game.cursor_width = 1;
+    game.cursor_height = 1;
+    game.cursor[0][0] = (block_t){5,0,0};
     game.money = 0;
     game.state = STATE_MENU;
     game.shop_index = 0;
     game.shop_menu_index = 0;
-
     //todo set palette
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
     setColorPalette(2, 0x0, 0x8, 0x0);
     setColorPalette(13, 0xF,0x6,0xF);
+
+
+
+    setColorPalette(14, 0x8, 0x0, 0x0);
+    setColorPalette(15, 0x0, 0x8, 0x0);
+
+
+
     update_right_text();
-    update_visual(0,0,49,49);
+    update_board(0,0,49,49);
     //todo make a basic startup screen
 }
 
@@ -68,16 +85,17 @@ void handle_input(uint8_t buf [4]){
     update_cursor();
     //TODO UPDATE STATES ETC
     update_states();
-    //printf("%d %d \n", game.cursor_x, game.cursor_y);
+
+    update_money();
 }
 
 /*
-    UPDATE_VISUAL
+    UPDATE_BOARD
     inputs: a rectangle of area to update
     outputs: none
     effects: rewrites the visual BRAM within the rectangle, used to selectively update the screen
 */
-void update_visual(int start_x, int start_y, int end_x, int end_y){
+void update_board(int start_x, int start_y, int end_x, int end_y){
     //todo updates from startx->endx and starty->endy
     if(start_x > end_x || start_y > end_y){
         return;
@@ -93,20 +111,29 @@ void update_visual(int start_x, int start_y, int end_x, int end_y){
         for(j = start_y; j<=end_y; j++){
             //(if cursor_visual[i-cursor_x][j-cursor_y] != 0) draw cursor @ ij
             //else draw visual board[i][j] @ ij
-            if((game.cursor_x <= i) && (game.cursor_y <= j) && (game.cursor_visual[i-game.cursor_x][j-game.cursor_y])){
-                setVisual(game.cursor_visual[i-game.cursor_x][j-game.cursor_y], i, j);
+            if((i < game.cursor_x + game.cursor_width) && (i >= game.cursor_x)
+            		&& (j < game.cursor_y + game.cursor_height) && (j >= game.cursor_y)
+					&& (game.cursor[i-game.cursor_x][j-game.cursor_y].type != BLANK_T)){
+
+                uint16_t visual = get_visual(game.cursor[i-game.cursor_x][j-game.cursor_y]);
+                if(visual!=1){
+                	if(game.occupied_board[i][j] == 0){//set green
+                	     visual = (visual & 0xFF00) | 0xF0;
+                	}else{//set red if overlap
+                	     visual = (visual & 0xFF00) | 0xE0;
+                	}
+                }
+                setVisual(visual, i, j);
             }else{
-                setVisual(game.visual_board[i][j], i, j);
+                uint16_t visual = get_visual(game.board[i][j]);
+                setVisual(visual, i, j);
             }
+            uint32_t board = get_functional(game.board[i][j]);
+            setBoard(board,i,j);
         }
     }
 }
-/*
-    UPDATE_BOARD
-*/
-void update_board(){
-    //todo update dynamic stuff
-}
+
 
 /*
     UPDATE_CURSOR
@@ -119,18 +146,18 @@ void update_cursor(){
     if(game.cursor_locked) return;
 
     if(pressed(UP) || held(UP)){
-        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height) < 50) game.cursor_y--;
+        if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height-1) < 50) game.cursor_y--;
     }
     if(pressed(DOWN) || held(DOWN)){
-        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height) < 49) game.cursor_y++;
+        if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height-1) < 49) game.cursor_y++;
     }
     if(pressed(RIGHT) || held(RIGHT)){
-        if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width) < 49) game.cursor_x++;
+        if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width-1) < 49) game.cursor_x++;
     }
     if(pressed(LEFT) || held(LEFT)){
-        if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width < 50)) game.cursor_x--;
+        if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width-1) < 50) game.cursor_x--;
     }
-    update_visual((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
+    update_board((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
 }
 /*
     UPDATE_STATES
@@ -140,6 +167,41 @@ void update_cursor(){
 */
 void update_states(){
     int right_bar_changed = 0;
+    int pressed_space = pressed(SPACE);
+    int pressed_esc = pressed(ESCAPE);
+    int pressed_r = pressed(R_KEY);
+
+    if(pressed_space && !game.cursor_locked){
+        if(game.cursor_holding){//try to place
+            if(place_cursor() != 0){
+                dump_cursor();
+                pressed_space = 0; // succeeded (use up action)
+            } 
+            clear_snapshot();
+        	game.buying = 0;
+        }else{//try to grab
+            component_t cut = cut_snapshot(game.cursor_x,game.cursor_y);
+            if(cut.width != 0){
+                fill_cursor(cut);
+                pressed_space = 0; //succeeded (use up action)
+            }
+        }
+    }
+    
+    if(pressed_esc && game.cursor_holding){//dump whatever you have
+        pressed_esc = 0; //use up action if holding
+        if(!game.buying){
+            paste_snapshot();
+            clear_snapshot();
+        }
+    	dump_cursor();
+    }
+
+    if(pressed_r && game.cursor_holding){
+    	pressed_r = 0;
+    	rotate_cursor();
+    }
+    
     switch(game.state){
         case STATE_MENU:
             game.cursor_locked = TRUE;
@@ -154,7 +216,7 @@ void update_states(){
         case STATE_SHOP_MENU: //shop menu has 4 categories: conveyors, mines, upgraders, furnaces
             game.cursor_locked = FALSE;
             game.shop_index = 0;
-            if(pressed(ESCAPE)){
+            if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
             } else if(pressed(W_KEY)){
@@ -163,13 +225,14 @@ void update_states(){
             } else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.shop_menu_index = ((game.shop_menu_index+1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
-            } else if(pressed(SPACE)){
+            } else if(pressed(ENTER)){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP;
             }
             break;  
         case STATE_SHOP: //shop menu for individual categories, index through
-            if(pressed(ESCAPE)){
+            game.cursor_locked = FALSE;
+            if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP_MENU;
             }else if(pressed(W_KEY)){
@@ -178,27 +241,18 @@ void update_states(){
             }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
-            }else if(pressed(SPACE)){
-                //todo buy shit
-            }
+            }else if(pressed(ENTER)){
+                if(!game.cursor_holding){
+                    game.buying = 1;
+                    fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
+                }
+            } 
             break;
         case STATE_CTRL:
             game.cursor_locked = TRUE;
-            if(pressed(ESCAPE)){
+            if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
-            }
-            break;
-        case STATE_BUY:
-            game.cursor_locked = FALSE;
-            if(pressed(ESCAPE)){
-                game.state = STATE_SHOP;
-            }
-            break;
-        case STATE_SELECT:
-            game.cursor_locked = FALSE;
-            if(pressed(ESCAPE)){
-                game.state = STATE_SHOP;
             }
             break;
     }
@@ -246,4 +300,17 @@ void update_right_text(){
             }
             break;
     }
+}
+void update_money(){
+	uint8_t ore[8];
+	for(int i = 0; i<100; i++){
+		if(!getOre(i,ore)) continue;
+		uint32_t top = (ore[7]<<24) | (ore[6] << 16) | (ore[5] << 8) | ore[4];
+		uint32_t base = ((top << 1) & 0xFFFF0000) >> 16;
+		uint32_t multiplier = ((top << 17) & 0xFF000000) >> 24;
+		uint32_t exponent = ((top << 25) & 0xF8000000) >> 27;
+		game.money += (base*multiplier) << exponent;
+		xil_printf("%d: %d %d %d\n",i,base,multiplier,exponent);
+	}
+	xil_printf("%ld\n",game.money);
 }
