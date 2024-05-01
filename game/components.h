@@ -33,7 +33,7 @@ extern uint32_t conveyor_library[16];
 extern uint32_t upgrader_library[16];
 extern uint32_t furnace_library[4];
 
-extern uint16_t visual_library[4];
+extern uint16_t visual_library[16];
 
 uint32_t get_functional(block_t block);
 uint16_t get_visual(block_t block);
