@@ -100,6 +100,8 @@ void initialize_shop(){
     conveyor_library[17] = 0x3981; // up
     conveyor_library[18] = 0x304D; // left
     conveyor_library[19] = 0x3181; // down
+	
+	conveyor_library[20] = 0x0;
     
     //todo some more furnaces?
     furnace_library[0] = 0xF0100F03; //base furnace 
@@ -168,6 +170,12 @@ void initialize_shop(){
 	
 	visual_library[25] = 0xC730;//hori
 	visual_library[26] = 0xC830;//verti
+	
+	visual_library[27] = 0x06C0;
+	visual_library[28] = 0x06D0;
+	visual_library[29] = 0x06E0;
+	visual_library[30] = 0x06F0;
+
 
     //slow straight
     shop_library[0][0] = (component_t){

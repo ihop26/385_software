@@ -102,56 +102,79 @@ void initialize_board()
 			game.occupied_board[i][j] = 1;
 		}
 	}
-	setVisual(0x06C0, 24, 24);
-	setVisual(0x06D0, 25, 24);
-	setVisual(0x06E0, 24, 25);//set mine visuals
-	setVisual(0x06F0, 25, 25);
+	game.board[24][24] = (block_t){CONVEYOR_T,20,27};
+	game.board[25][24] = (block_t){CONVEYOR_T,20,28};
+	game.board[24][25] = (block_t){CONVEYOR_T,20,29};
+	game.board[25][25] = (block_t){CONVEYOR_T,20,30};
 	
 	//right conveyors
-	setBoard(conveyor_library[0],24,27);
-	setBoard(conveyor_library[0],24,26);	
-	setBoard(conveyor_library[0],26,27);
-	setBoard(conveyor_library[0],26,26);
-	setVisual(visual_library[0],24,27);
-	setVisual(visual_library[0],24,26);	
-	setVisual(visual_library[0],26,27);
-	setVisual(visual_library[0],26,26);
+	game.board[24,27] = (block_t){CONVEYOR_T,0,0};
+	game.board[24,26] = (block_t){CONVEYOR_T,0,0};
+	game.board[26,27] = (block_t){CONVEYOR_T,0,0};
+	game.board[26,26] = (block_t){CONVEYOR_T,0,0};
+
 	//up conveyors
-	setBoard(conveyor_library[1],23,24);
-	setBoard(conveyor_library[1],22,24);	
-	setBoard(conveyor_library[1],23,26);
-	setBoard(conveyor_library[1],22,26);
-	setVisual(visual_library[1],23,24);
-	setVisual(visual_library[1],22,24);	
-	setVisual(visual_library[1],23,26);
-	setVisual(visual_library[1],22,26);
+	game.board[23,24] = (block_t){CONVEYOR_T,1,1};
+	game.board[22,24] = (block_t){CONVEYOR_T,1,1};
+	game.board[23,26] = (block_t){CONVEYOR_T,1,1};
+	game.board[22,26] = (block_t){CONVEYOR_T,1,1};
 	
 	//left conveyors
-	setBoard(conveyor_library[2],25,22);
-	setBoard(conveyor_library[2],23,23);	
-	setBoard(conveyor_library[2],25,22);
-	setBoard(conveyor_library[2],23,23);
-	setVisual(visual_library[2],25,22);
-	setVisual(visual_library[2],23,23);	
-	setVisual(visual_library[2],25,22);
-	setVisual(visual_library[2],23,23);
+	game.board[25,22] = (block_t){CONVEYOR_T,2,2};
+	game.board[23,23] = (block_t){CONVEYOR_T,2,2};
+	game.board[25,22] = (block_t){CONVEYOR_T,2,2};
+	game.board[23,23] = (block_t){CONVEYOR_T,2,2};
 	
 	//down conveyors
-	setBoard(conveyor_library[3],26,23);
-	setBoard(conveyor_library[3],27,25);	
-	setBoard(conveyor_library[3],26,23);
-	setBoard(conveyor_library[3],27,25);
-	setVisual(visual_library[3],26,23);
-	setVisual(visual_library[3],27,25);	
-	setVisual(visual_library[3],26,23);
-	setVisual(visual_library[3],27,25);
+	game.board[26,23] = (block_t){CONVEYOR_T,3,3};
+	game.board[27,25] = (block_t){CONVEYOR_T,3,3};
+	game.board[26,23] = (block_t){CONVEYOR_T,3,3};
+	game.board[27,25] = (block_t){CONVEYOR_T,3,3};
 	
-	setVisual(visual_library[25],26,24);
-	setVisual(visual_library[25],23,25);
+}
+void update_mines(){
+	if(game.mine_upgrades[0] == 1){
+		game.board[24][24] = (block_t){CONVEYOR_T,10,27);
+		if(game.mine_upgrades[1] == 1){
+			game.board[24][24] = (block_t){CONVEYOR_T,2,27);
+		}
+	}
 	
-	setVisual(visual_library[26],24,23);
-	setVisual(visual_library[26],25,26);
-
+	if(game.mine_upgrades[2] == 1){
+		game.board[24][25] = (block_t){CONVEYOR_T,9,28);
+		if(game.mine_upgrades[3] == 1){
+			game.board[24][25] = (block_t){CONVEYOR_T,1,28);
+		}
+	}
+	
+	if(game.mine_upgrades[4] == 1){
+		game.board[25][24] = (block_t){CONVEYOR_T,11,29);
+		if(game.mine_upgrades[5] == 1){
+			game.board[25][24] = (block_t){CONVEYOR_T,3,29);
+		}
+	}
+	
+	if(game.mine_upgrades[6] == 1){
+		game.board[25][25] = (block_t){CONVEYOR_T,8,30);
+		if(game.mine_upgrades[7] == 1){
+			game.board[25][25] = (block_t){CONVEYOR_T,0,30);
+		}
+	}
+	
+	if(game.swap == 1){
+		game.board[23][25] = (block_t){CONVEYOR_T,2,25);
+		game.board[26][24] = (block_t){CONVEYOR_T,2,25);
+		game.board[25][27] = (block_t){CONVEYOR_T,1,26);
+		game.board[24][23] = (block_t){CONVEYOR_T,1,26);
+	}else{
+		game.board[23][25] = (block_t){CONVEYOR_T,0,25);
+		game.board[26][24] = (block_t){CONVEYOR_T,0,25);
+		game.board[25][27] = (block_t){CONVEYOR_T,3,26);
+		game.board[24][23] = (block_t){CONVEYOR_T,3,26);
+	}
+	
+	game.swap = (game.swap+1)%2;
+	
 }
 /*
     HANDLE INPUT
@@ -213,50 +236,7 @@ void update_board(int start_x, int start_y, int end_x, int end_y){
     }
 }
 
-void update_mines(){
-	if(game.mine_upgrades[0] == 1){
-		setBoard(conveyor_library[10],24,24);
-		if(game.mine_upgrades[1] == 1){
-			setBoard(conveyor_library[2],24,24);
-		}
-	}
-	
-	if(game.mine_upgrades[2] == 1){
-		setBoard(conveyor_library[9],24,25);
-		if(game.mine_upgrades[3] == 1){
-			setBoard(conveyor_library[1],24,25);
-		}
-	}
-	
-	if(game.mine_upgrades[4] == 1){
-		setBoard(conveyor_library[11],25,24);
-		if(game.mine_upgrades[5] == 1){
-			setBoard(conveyor_library[3],25,24);
-		}
-	}
-	
-	if(game.mine_upgrades[6] == 1){
-		setBoard(conveyor_library[8],25,25);
-		if(game.mine_upgrades[7] == 1){
-			setBoard(conveyor_library[0],25,25);
-		}
-	}
-	
-	if(game.swap == 1){
-		setBoard(conveyor_library[2],23,25);
-		setBoard(conveyor_library[2],26,24);
-		setBoard(conveyor_library[1],25,27);
-		setBoard(conveyor_library[1],24,23);
-	}else{
-		setBoard(conveyor_library[0],23,25);
-		setBoard(conveyor_library[0],26,24);
-		setBoard(conveyor_library[3],25,27);
-		setBoard(conveyor_library[3],24,23);
-	}
-	
-	game.swap = (game.swap+1)%2;
-	
-}
+
 /*
     UPDATE_CURSOR
     inputs none
