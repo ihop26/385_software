@@ -124,11 +124,11 @@ void initialize_shop(){
     upgrader_library[10] = 0xf2914046; // left
     upgrader_library[11] = 0xf2914082; // down
 	
-	//basic +1 exp upgrader (max 2)
-	upgrader_library[12] = 0xf0b18006; // right
-    upgrader_library[13] = 0xf0b18882; // up
-    upgrader_library[14] = 0xf0b18046; // left
-    upgrader_library[15] = 0xf0b18082; // down
+	//basic +1 exp upgrader (max 4)
+	upgrader_library[12] = 0xf151b006; // right
+    upgrader_library[13] = 0xf151b882; // up
+    upgrader_library[14] = 0xf151b046; // left
+    upgrader_library[15] = 0xf151b082; // down
 	
 
     //visual stuff
@@ -163,6 +163,8 @@ void initialize_shop(){
     visual_library[21] = 0x4452; //up upgrader
     visual_library[22] = 0x4352; //left upgrader
     visual_library[23] = 0x4252;//down upgrader
+	
+	visual_library[24] = 0x0640;
 
     //slow straight
     shop_library[0][0] = (component_t){
@@ -292,9 +294,9 @@ void initialize_shop(){
            	5,5,
        		{
        		{{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0}},
-       		{{WALL_T,0,0},{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{WALL_T,0,0}},
-       		{{WALL_T,0,0},{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{WALL_T,0,0}},
        		{{WALL_T,0,0},{WALL_T,0,0},{UPGRADER_T,12,20},{WALL_T,0,0},{WALL_T,0,0}},
+       		{{WALL_T,0,0},{UPGRADER_T,15,23},{CONVEYOR_T,0,0},{UPGRADER_T,13,21},{WALL_T,0,0}},
+       		{{WALL_T,0,0},{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{WALL_T,0,0}},
        		{{WALL_T,0,0},{WALL_T,0,0},{CONVEYOR_T,16,16},{WALL_T,0,0},{WALL_T,0,0}}
        		}
      };
@@ -302,7 +304,7 @@ void initialize_shop(){
     shop_library[2][0] = (component_t){
            	1,1,
        		{
-       		{{FURNACE_T,0,15},{0},{0},{0},{0}},
+       		{{FURNACE_T,0,24},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
@@ -311,11 +313,33 @@ void initialize_shop(){
      };
 	 
 	 shop_library[2][1] = (component_t){
-           	1,1,
+           	3,3,
        		{
-       		{{FURNACE_T,0,15},{0},{0},{0},{0}},
+       		{{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{FURNACE_T,1,24},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{CONVEYOR_T,2,2},{WALL_T,0,0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}}
+       		}
+     };
+	 
+	 shop_library[2][2] = (component_t){
+           	3,3,
+       		{
+       		{{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{FURNACE_T,2,24},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
+       		{{0},{0},{0},{0},{0}}
+       		}
+     };
+	 
+	 shop_library[2][3] = (component_t){
+           	3,3,
+       		{
+       		{{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{FURNACE_T,2,24},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}}
        		}
