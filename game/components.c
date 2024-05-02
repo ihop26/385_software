@@ -63,7 +63,7 @@ uint32_t get_functional(block_t block){
         //return spawner_library[block.functional_index];
     	return 0;
     }else if(block.type == BLANK_T){//blank
-        return 0;
+        return 0x0556;
     }else if(block.type == CURSOR_T){
         return 0; //cursor does nothing
     }else if(block.type == WALL_T){

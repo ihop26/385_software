@@ -13,6 +13,7 @@ extern unsigned char menu_items[2][31];
 
 extern unsigned char shop_text[30][31];
 
+extern unsigned char bottom_text[5][31];
 
 extern unsigned char shop_menu_items[4][31];
 

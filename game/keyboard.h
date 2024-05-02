@@ -18,7 +18,10 @@
 #define Q_KEY 11
 #define W_KEY 12
 #define S_KEY 13
-
+#define A_KEY 14
+#define D_KEY 15
+#define DELETE 16
+#define INF 17
 struct KEYBOARD_STATE {
 	uint32_t counting[30];
 	uint8_t held[30];

@@ -6,9 +6,9 @@ struct GAME_INFO game;
 /*         TODO LIST                                       */
 /*       1. add states to the game      DONE               */
 /*       2. add simple shop functionality   DONE           */
-/*       3. add ability to select & delete components (ALMSOT)      */
+/*       3. add ability to select & delete components DONE      */
 /*       4. when selecting components can move it around  DONE  */
-/*       5. money counter                                  TODAY*/
+/*       5. money counter                                  DONE*/
 /*       6. rotation of simple components                 DONE */
 /*       7. add support for composite components           DONE*/
 /*            (figure out a good way to store this)        */
@@ -55,17 +55,25 @@ void setup_game(){
     game.shop_index = 0;
     game.shop_menu_index = 0;
     //todo set palette
+    //generic w/b colors
     setColorPalette(0, 	0, 0, 0);
 	setColorPalette(1, 0x8, 0x8, 0x8);
-    setColorPalette(2, 0x0, 0x8, 0x8);
-    setColorPalette(13, 0xF,0x6,0xF);
 
-
-
+    //dark grey
+    setColorPalette(2, 0x2, 0x2, 0x2);
+    
+    //grass
+    setColorPalette(10,0x6,0xC,0x0)
+    setColorPalette(11,0x4,0x8,0x0);
+    //colision/ore colors
+    setColorPalette(12, 0x0,0x8,0x8);
+    setColorPalette(13, 0x8,0x8,0x0);
     setColorPalette(14, 0x8, 0x0, 0x0);
     setColorPalette(15, 0x0, 0x8, 0x0);
 
-
+    for(int i = 0; i<5; i++){
+        setBottomText(bottom_text[i],0, i, 0, 1);
+    }
 
     update_right_text();
     update_board(0,0,49,49);
@@ -145,16 +153,16 @@ void update_cursor(){
 
     if(game.cursor_locked) return;
 
-    if(pressed(UP) || held(UP)){
+    if(pressed(W_KEY) || held(W_KEY)){
         if(game.cursor_y > 0 && (game.cursor_y+game.cursor_height-1) < 50) game.cursor_y--;
     }
-    if(pressed(DOWN) || held(DOWN)){
+    if(pressed(S_KEY) || held(S_KEY)){
         if(game.cursor_y > -1 && (game.cursor_y+game.cursor_height-1) < 49) game.cursor_y++;
     }
-    if(pressed(RIGHT) || held(RIGHT)){
+    if(pressed(D_KEY) || held(D_KEY)){
         if(game.cursor_x > -1 && (game.cursor_x+game.cursor_width-1) < 49) game.cursor_x++;
     }
-    if(pressed(LEFT) || held(LEFT)){
+    if(pressed(A_KEY) || held(A_KEY)){
         if(game.cursor_x > 0 && (game.cursor_x+game.cursor_width-1) < 50) game.cursor_x--;
     }
     update_board((game.cursor_x-1),(game.cursor_y-1),(game.cursor_x+game.cursor_width+1),(game.cursor_y+game.cursor_height+1));
@@ -170,6 +178,12 @@ void update_states(){
     int pressed_space = pressed(SPACE);
     int pressed_esc = pressed(ESCAPE);
     int pressed_r = pressed(R_KEY);
+    int pressed_delete = pressed(DELETE);
+
+    //cheat in money
+    if(pressed(INF)){
+        game.money = 0xFFFFFFFFFFFF;
+    }
 
     if(pressed_space && !game.cursor_locked){
         if(game.cursor_holding){//try to place
@@ -188,7 +202,12 @@ void update_states(){
         }
     }
     
-    //todo if pressed delete key, dump cursor & clear snapshot
+    //if pressed delete, dump cursor and delete snapshot
+    if(pressed_delete && game.cursor_holding){
+        pressed_delete = 0;
+        dump_cursor();
+        clear_snapshot();
+    }
 
     if(pressed_esc && game.cursor_holding){//dump whatever you have
         pressed_esc = 0; //use up action if holding
@@ -207,11 +226,11 @@ void update_states(){
     switch(game.state){
         case STATE_MENU:
             game.cursor_locked = TRUE;
-            if(pressed(W_KEY)){
+            if(pressed(UP)){
                 right_bar_changed = 1;
                 game.menu_index = ((game.menu_index-1)+2)%2;
                 xil_printf("%d",game.menu_index);
-            }else if(pressed(S_KEY)){
+            }else if(pressed(DOWN)){
                 right_bar_changed = 1;
                 game.menu_index = ((game.menu_index+1)+2)%2;
                 xil_printf("%d",game.menu_index);
@@ -231,10 +250,10 @@ void update_states(){
             if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
-            } else if(pressed(W_KEY)){
+            } else if(pressed(UP)){
                 right_bar_changed = 1;
                 game.shop_menu_index = ((game.shop_menu_index-1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
-            } else if(pressed(S_KEY)){
+            } else if(pressed(DOWN)){
                 right_bar_changed = 1;
                 game.shop_menu_index = ((game.shop_menu_index+1)+MAX_SHOP_CATEGORIES)%MAX_SHOP_CATEGORIES;
             } else if(pressed(ENTER)){
@@ -247,10 +266,10 @@ void update_states(){
             if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP_MENU;
-            }else if(pressed(W_KEY)){
+            }else if(pressed(UP)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index-1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
-            }else if(pressed(S_KEY)){
+            }else if(pressed(DOWN)){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(ENTER)){

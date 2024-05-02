@@ -57,7 +57,10 @@ void setup_keyboard(){
 	mapper[0x14] = Q_KEY;
 	mapper[0x16] = S_KEY;
 	mapper[0x1A] = W_KEY;
-
+	mapper[0x04] = A_KEY;
+	mapper[0x07] = D_KEY;
+	mapper[0x4C] = DELETE;
+	mapper[0x4A] = INF;
 }
 
 int pressed(uint8_t code){
