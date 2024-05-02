@@ -50,7 +50,7 @@ void setup_game(){
     game.cursor_width = 1;
     game.cursor_height = 1;
     game.cursor[0][0] = (block_t){5,0,0};
-    game.money = 0;
+    game.money = 50;
     game.state = STATE_MENU;
     game.shop_index = 0;
     game.shop_menu_index = 0;
@@ -210,14 +210,17 @@ void update_states(){
             if(pressed(W_KEY)){
                 right_bar_changed = 1;
                 game.menu_index = ((game.menu_index-1)+2)%2;
+                xil_printf("%d",game.menu_index);
             }else if(pressed(S_KEY)){
                 right_bar_changed = 1;
                 game.menu_index = ((game.menu_index+1)+2)%2;
+                xil_printf("%d",game.menu_index);
+
             }else if(pressed(ENTER)){
                 right_bar_changed = 1;
                 if(game.menu_index == 0){
-                    game.state = STATE_SHOP;
-                }else if(game.menu_index = =1){
+                    game.state = STATE_SHOP_MENU;
+                }else if(game.menu_index == 1){
                     game.state = STATE_CTRL;
                 }
             }
@@ -251,7 +254,7 @@ void update_states(){
                 right_bar_changed = 1;
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(ENTER)){
-                if(!game.cursor_holding && game.money > shop_prices[game.shop_menu_index][game.shop_index]){
+                if(!game.cursor_holding && game.money >= shop_prices[game.shop_menu_index][game.shop_index]){
                     game.buying = 1;
                     game.money -= shop_prices[game.shop_menu_index][game.shop_index];
                     fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
@@ -281,10 +284,10 @@ void update_right_text(){
             }
             for(int i = 0; i<2; i++){
                 foreground = 1;
-                if(game.shop_menu_index == i){
+                if(game.menu_index == i){
                     foreground = 15;
                 }
-                setRightText(shop_menu_items[i],0,(5+i*4),0,foreground);
+                setRightText(menu_items[i],0,(5+i*4),0,foreground);
             }
             break;
         case STATE_SHOP_MENU:
@@ -329,7 +332,7 @@ void update_money(){
 		game.money += (base*(multiplier+1)) << exponent;
 		xil_printf("%d: %d %d %d\n",i,base,multiplier,exponent);
 	}
-	xil_printf("%ld\n",game.money);
+	//xil_printf("%ld\n",game.money);
     update_m_string();
     setBottomText(game.m_string, 0, 2, 0, 1);
 
@@ -337,14 +340,18 @@ void update_money(){
 
 void update_m_string(){
     uint64_t mon = game.money;
-    int ctr = 0;
-    for(int i = 0; i<20; i++){
+
+    int ctr = 1;
+    for(int i = 0; i<21; i++){
         game.m_string[i] = ' ';
     }
-    game.m_string[20] = '\0';
+    game.m_string[20] = mon%10+48;
+    mon = mon/10;
     while(mon > 0 && ctr < 20){
-        game.m_string[19-ctr] = mon%10 + 48;
+        game.m_string[20-ctr] = mon%10 + 48;
         mon = mon/10;
         ctr++;
     }
+   game.m_string[20-ctr] = '$';
+   game.m_string[21] = '\0';
 }

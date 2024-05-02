@@ -130,10 +130,10 @@ void initialize_shop(){
     visual_library[10] = 0x4310; //left conveyor
     visual_library[11] = 0x4210;//down conveyor
     //uber slow
-    visual_library[12] = 0x4120; //right conveyor
-    visual_library[13] = 0x4420; //up conveyor
-    visual_library[14] = 0x4320; //left conveyor
-    visual_library[15] = 0x4220;//down conveyor
+    visual_library[12] = 0x0110; //right conveyor
+    visual_library[13] = 0x0410; //up conveyor
+    visual_library[14] = 0x0310; //left conveyor
+    visual_library[15] = 0x0210;//down conveyor
 
     //slow straight
     shop_library[0][0] = (component_t){
@@ -150,8 +150,8 @@ void initialize_shop(){
     shop_library[0][1] = (component_t){
         	2,2,
     		{
-    		{{CONVEYOR_T,11,7},{CONVEYOR_T,7,4},{0},{0},{0}},
-    		{{0},{CONVEYOR_T,7,4},{0},{0},{0}},
+    		{{CONVEYOR_T,11,7},{CONVEYOR_T,8,4},{0},{0},{0}},
+    		{{0},{CONVEYOR_T,8,4},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}},
     		{{0},{0},{0},{0},{0}}

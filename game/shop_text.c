@@ -1,10 +1,10 @@
 #include "shop_text.h"
 unsigned char menu_text[30][31] =
 {"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\0",
- "             menu             \0",
+ "           - MENU -           \0",
  "                              \0",
  "                              \0",
- "             todo             \0",
+ "                              \0",
  "                              \0",
  "                              \0",
  "                              \0",
@@ -33,10 +33,10 @@ unsigned char menu_text[30][31] =
 
  unsigned char controls_text[30][31] =
 {"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\0",
- "           controls           \0",
+ "         - CONTROLS -         \0",
  "                              \0",
  "                              \0",
- "             todo             \0",
+ "                              \0",
  "                              \0",
  "                              \0",
  "                              \0",
@@ -65,7 +65,7 @@ unsigned char menu_text[30][31] =
 
  unsigned char shop_menu_text[30][31] =
 {"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\0",
- "          shop menu           \0",
+ "     -  SHOP CATEGORIES  -    \0",
  "                              \0",
  "                              \0",
  "                              \0",
@@ -97,7 +97,7 @@ unsigned char menu_text[30][31] =
 
   unsigned char shop_text[30][31] =
 {"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\0",
- "                              \0",
+ "           - SHOP -           \0",
  "                              \0",
  "                              \0",
  "                              \0",
@@ -130,8 +130,8 @@ unsigned char menu_text[30][31] =
 
   unsigned char menu_items [2][31] = 
   {
-    "     Shop                     \0"
-    "     Controls                 \0"
+    "        Shop                  \0",
+    "      Controls                \0"
   };
 
   unsigned char shop_menu_items[4][31] =
@@ -178,7 +178,7 @@ unsigned char shop_items [4][8][31] =
 };
 
 shop_prices[4][8] = {
-  {0,0,0,0,0,0,0,0},//conveyors
+  {10,10,0,0,0,0,0,0},//conveyors
   {0,0,0,0,0,0,0,0},//upgraders
   {0,0,0,0,0,0,0,0},//furnaces
   {0,0,0,0,0,0,0,0}//mines
