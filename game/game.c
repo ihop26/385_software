@@ -102,79 +102,79 @@ void initialize_board()
 			game.occupied_board[i][j] = 1;
 		}
 	}
+	game.board[0][1] = (block_t){CONVEYOR_T,20,27};
 	game.board[24][24] = (block_t){CONVEYOR_T,20,27};
 	game.board[25][24] = (block_t){CONVEYOR_T,20,28};
 	game.board[24][25] = (block_t){CONVEYOR_T,20,29};
 	game.board[25][25] = (block_t){CONVEYOR_T,20,30};
 	
 	//right conveyors
-	game.board[24,27] = (block_t){CONVEYOR_T,0,0};
-	game.board[24,26] = (block_t){CONVEYOR_T,0,0};
-	game.board[26,27] = (block_t){CONVEYOR_T,0,0};
-	game.board[26,26] = (block_t){CONVEYOR_T,0,0};
+	game.board[27][24] = (block_t){CONVEYOR_T,0,0};
+	game.board[26][24] = (block_t){CONVEYOR_T,0,0};
+	game.board[27][26] = (block_t){CONVEYOR_T,0,0};
+	game.board[26][26] = (block_t){CONVEYOR_T,0,0};
 
 	//up conveyors
-	game.board[23,24] = (block_t){CONVEYOR_T,1,1};
-	game.board[22,24] = (block_t){CONVEYOR_T,1,1};
-	game.board[23,26] = (block_t){CONVEYOR_T,1,1};
-	game.board[22,26] = (block_t){CONVEYOR_T,1,1};
+	game.board[24][23] = (block_t){CONVEYOR_T,1,1};
+	game.board[24][22] = (block_t){CONVEYOR_T,1,1};
+	game.board[26][23] = (block_t){CONVEYOR_T,1,1};
+	game.board[26][22] = (block_t){CONVEYOR_T,1,1};
 	
 	//left conveyors
-	game.board[25,22] = (block_t){CONVEYOR_T,2,2};
-	game.board[23,23] = (block_t){CONVEYOR_T,2,2};
-	game.board[25,22] = (block_t){CONVEYOR_T,2,2};
-	game.board[23,23] = (block_t){CONVEYOR_T,2,2};
+	game.board[22][25] = (block_t){CONVEYOR_T,2,2};
+	game.board[22][23] = (block_t){CONVEYOR_T,2,2};
+	game.board[23][25] = (block_t){CONVEYOR_T,2,2};
+	game.board[23][23] = (block_t){CONVEYOR_T,2,2};
 	
 	//down conveyors
-	game.board[26,23] = (block_t){CONVEYOR_T,3,3};
-	game.board[27,25] = (block_t){CONVEYOR_T,3,3};
-	game.board[26,23] = (block_t){CONVEYOR_T,3,3};
-	game.board[27,25] = (block_t){CONVEYOR_T,3,3};
+	game.board[23][26] = (block_t){CONVEYOR_T,3,3};
+	game.board[25][26] = (block_t){CONVEYOR_T,3,3};
+	game.board[23][27] = (block_t){CONVEYOR_T,3,3};
+	game.board[25][27] = (block_t){CONVEYOR_T,3,3};
 	
 }
 void update_mines(){
 	if(game.mine_upgrades[0] == 1){
-		game.board[24][24] = (block_t){CONVEYOR_T,10,27);
+		game.board[24][24] = (block_t){CONVEYOR_T,10,27};
 		if(game.mine_upgrades[1] == 1){
-			game.board[24][24] = (block_t){CONVEYOR_T,2,27);
+			game.board[24][24] = (block_t){CONVEYOR_T,2,27};
 		}
 	}
 	
 	if(game.mine_upgrades[2] == 1){
-		game.board[24][25] = (block_t){CONVEYOR_T,9,28);
+		game.board[24][25] = (block_t){CONVEYOR_T,9,28};
 		if(game.mine_upgrades[3] == 1){
-			game.board[24][25] = (block_t){CONVEYOR_T,1,28);
+			game.board[24][25] = (block_t){CONVEYOR_T,1,28};
 		}
 	}
 	
 	if(game.mine_upgrades[4] == 1){
-		game.board[25][24] = (block_t){CONVEYOR_T,11,29);
+		game.board[25][24] = (block_t){CONVEYOR_T,11,29};
 		if(game.mine_upgrades[5] == 1){
-			game.board[25][24] = (block_t){CONVEYOR_T,3,29);
+			game.board[25][24] = (block_t){CONVEYOR_T,3,29};
 		}
 	}
 	
 	if(game.mine_upgrades[6] == 1){
-		game.board[25][25] = (block_t){CONVEYOR_T,8,30);
+		game.board[25][25] = (block_t){CONVEYOR_T,8,30};
 		if(game.mine_upgrades[7] == 1){
-			game.board[25][25] = (block_t){CONVEYOR_T,0,30);
+			game.board[25][25] = (block_t){CONVEYOR_T,0,30};
 		}
 	}
 	
 	if(game.swap == 1){
-		game.board[23][25] = (block_t){CONVEYOR_T,2,25);
-		game.board[26][24] = (block_t){CONVEYOR_T,2,25);
-		game.board[25][27] = (block_t){CONVEYOR_T,1,26);
-		game.board[24][23] = (block_t){CONVEYOR_T,1,26);
+		game.board[25][23] = (block_t){CONVEYOR_T,2,25};
+		game.board[24][26] = (block_t){CONVEYOR_T,2,25};
+		game.board[27][24] = (block_t){CONVEYOR_T,1,26};
+		game.board[23][24] = (block_t){CONVEYOR_T,1,26};
 	}else{
-		game.board[23][25] = (block_t){CONVEYOR_T,0,25);
-		game.board[26][24] = (block_t){CONVEYOR_T,0,25);
-		game.board[25][27] = (block_t){CONVEYOR_T,3,26);
-		game.board[24][23] = (block_t){CONVEYOR_T,3,26);
+		game.board[25][23] = (block_t){CONVEYOR_T,0,25};
+		game.board[24][26] = (block_t){CONVEYOR_T,0,25};
+		game.board[27][24] = (block_t){CONVEYOR_T,3,26};
+		game.board[23][24] = (block_t){CONVEYOR_T,3,26};
 	}
 	
 	game.swap = (game.swap+1)%2;
-	
 }
 /*
     HANDLE INPUT
@@ -189,6 +189,7 @@ void handle_input(uint8_t buf [4]){
     update_states();
     update_money();
 	update_mines();
+    update_board(0,0,49,49);
 }
 
 /*
