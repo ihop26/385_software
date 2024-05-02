@@ -56,7 +56,9 @@ void setup_game(){
     game.shop_index = 0;
     game.shop_menu_index = 0;
 	game.swap = 0;
-	game.mine_upgrades = {0,0,0,0,0,0,0,0,0};
+	for(int i = 0; i<8; i++){
+		game.mine_upgrades[i] = 0;
+	}
     //todo set palette
     //generic w/b colors
     setColorPalette(0, 	0, 0, 0);
@@ -148,8 +150,6 @@ void initialize_board()
 	setVisual(visual_library[26],24,23);
 	setVisual(visual_library[26],25,26);
 
-	
-	setVisual(code, x, y)
 }
 /*
     HANDLE INPUT
@@ -252,7 +252,7 @@ void update_mines(){
 		setBoard(conveyor_library[3],24,23);
 	}
 	
-	game.swap = (game.swap+1)%2
+	game.swap = (game.swap+1)%2;
 	
 }
 /*
@@ -390,7 +390,10 @@ void update_states(){
 					}else if(game.mine_upgrades[game.shop_index] == 0){
 						game.money -= shop_prices[game.shop_menu_index][game.shop_index];
 						game.mine_upgrades[game.shop_index] = 1;
-						shop_items[game.shop_menu_index][game.shop_index] = "| BOUGHT                  |\0";
+						char* text = "| BOUGHT                  |\0";
+						for(int i = 0; i<31; i++){
+							shop_items[game.shop_menu_index][game.shop_index][i] = text[i];
+						}
 					}
                 }
             } 
