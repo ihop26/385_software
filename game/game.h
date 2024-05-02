@@ -28,8 +28,8 @@ struct GAME_INFO {
     uint8_t cursor_width;
     uint8_t cursor_height;
 
-    
-    
+    uint8_t mine_upgrades[8];
+    uint8_t swap;
     //store indices into the functional library
     uint8_t cursor_holding;
     block_t cursor [5][5];
@@ -69,5 +69,7 @@ void update_money();
 
 void update_m_string();
 
+void initialize_board();
 
+void update_mines();
 #endif

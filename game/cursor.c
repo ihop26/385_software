@@ -44,8 +44,8 @@ int place_cursor(){
         }
     }
     game.occup_code++;
-    if(game.occup_code == 0){
-        game.occup_code++;
+    if(game.occup_code == 0 || game.occup_code == 1){
+        game.occup_code = 2;
     }
     update_board(0,0,49,49);
     return 1;
@@ -99,7 +99,7 @@ int rotate_cursor(){
 uint8_t flood_board[50][50];
 
 component_t cut_snapshot(int x, int y){
-    if(game.occupied_board[x][y] == 0) return (component_t){0};
+    if(game.occupied_board[x][y] == 0 || game.occupied_board[x][y] == 1) return (component_t){0};
     int key = game.occupied_board[x][y];
     for(int i = 0; i<50; i++){
     	for(int j = 0; j<50; j++){

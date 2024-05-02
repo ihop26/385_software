@@ -12,8 +12,8 @@ struct GAME_INFO game;
 /*       6. rotation of simple components                 DONE */
 /*       7. add support for composite components           DONE*/
 /*            (figure out a good way to store this)        */
-/*       10. finish upgraders                              */
-/*       11. finish furnaces                               */
+/*       10. finish upgraders   DONE                           */
+/*       11. finish furnaces    DONE?                           */
 /*       8. prestige                                       */
 /*       9. polish game                                    */
 /////////////////////////////////////////////////////////////
@@ -42,20 +42,21 @@ void setup_game(){
             game.cursor[i][j] = (block_t){0};
         }
     }
-    uint64_t initial_mine = 0x0000808500001040;
-    setMine(0,initial_mine);
     game.buying = 0;
     game.cursor_holding = 0;
-    game.occup_code = 1;
+	game.cursor_locked = FALSE;
+    game.occup_code = 2;
     game.cursor_x = 0;
     game.cursor_y = 0;
     game.cursor_width = 1;
     game.cursor_height = 1;
     game.cursor[0][0] = (block_t){5,0,0};
     game.money = 50;
-    game.state = STATE_MENU;
+    game.state = STATE_CTRL;
     game.shop_index = 0;
     game.shop_menu_index = 0;
+	game.swap = 0;
+	game.mine_upgrades = {0,0,0,0,0,0,0,0,0};
     //todo set palette
     //generic w/b colors
     setColorPalette(0, 	0, 0, 0);
@@ -86,7 +87,70 @@ void setup_game(){
     update_board(0,0,49,49);
     //todo make a basic startup screen
 }
+void initialize_board()
+{
+	setMine(0,0b0000000000000000100000000000000000000000000000000000011000011000);
+	setMine(1,0b0000000000000000100000001000000100000000000000000001011000011001);
+	setMine(2,0b0000000000000000100000001000011000000000000000000010011001011000);
+	setMine(3,0b0000000000110010000000000000001100000000000000000011011001011001);
+	for(int i = 22; i<=27; i++){
+		for(int j = 22; j<=27; j++){
+			setVisual(0x0620, i, j); //set to walls
+		}
+	}
+	setVisual(0x06C0, 24, 24);
+	setVisual(0x06D0, 25, 24);
+	setVisual(0x06E0, 24, 25);//set mine visuals
+	setVisual(0x06F0, 25, 25);
+	
+	//right conveyors
+	setBoard(conveyor_library[0],24,27);
+	setBoard(conveyor_library[0],24,26);	
+	setBoard(conveyor_library[0],26,27);
+	setBoard(conveyor_library[0],26,26);
+	setVisual(visual_library[0],24,27);
+	setVisual(visual_library[0],24,26);	
+	setVisual(visual_library[0],26,27);
+	setVisual(visual_library[0],26,26);
+	//up conveyors
+	setBoard(conveyor_library[1],23,24);
+	setBoard(conveyor_library[1],22,24);	
+	setBoard(conveyor_library[1],23,26);
+	setBoard(conveyor_library[1],22,26);
+	setVisual(visual_library[1],23,24);
+	setVisual(visual_library[1],22,24);	
+	setVisual(visual_library[1],23,26);
+	setVisual(visual_library[1],22,26);
+	
+	//left conveyors
+	setBoard(conveyor_library[2],25,22);
+	setBoard(conveyor_library[2],23,23);	
+	setBoard(conveyor_library[2],25,22);
+	setBoard(conveyor_library[2],23,23);
+	setVisual(visual_library[2],25,22);
+	setVisual(visual_library[2],23,23);	
+	setVisual(visual_library[2],25,22);
+	setVisual(visual_library[2],23,23);
+	
+	//down conveyors
+	setBoard(conveyor_library[3],26,23);
+	setBoard(conveyor_library[3],27,25);	
+	setBoard(conveyor_library[3],26,23);
+	setBoard(conveyor_library[3],27,25);
+	setVisual(visual_library[3],26,23);
+	setVisual(visual_library[3],27,25);	
+	setVisual(visual_library[3],26,23);
+	setVisual(visual_library[3],27,25);
+	
+	setVisual(visual_library[25],26,24);
+	setVisual(visual_library[25],23,25);
+	
+	setVisual(visual_library[26],24,23);
+	setVisual(visual_library[26],25,26);
 
+	
+	setVisual(code, x, y)
+}
 /*
     HANDLE INPUT
     Inputs: buffer, stores the 4 keys currently pressed using scancodes
@@ -96,12 +160,10 @@ void setup_game(){
 */
 void handle_input(uint8_t buf [4]){
     update_keyboard_state(buf);
-    //UPDATE CURSOR STUFF
     update_cursor();
-    //TODO UPDATE STATES ETC
     update_states();
-
-   update_money();
+    update_money();
+	update_mines();
 }
 
 /*
@@ -149,7 +211,50 @@ void update_board(int start_x, int start_y, int end_x, int end_y){
     }
 }
 
-
+void update_mines(){
+	if(game.mine_upgrades[0] == 1){
+		setBoard(conveyor_library[10],24,24);
+		if(game.mine_upgrades[1] == 1){
+			setBoard(conveyor_library[2],24,24);
+		}
+	}
+	
+	if(game.mine_upgrades[2] == 1){
+		setBoard(conveyor_library[9],24,25);
+		if(game.mine_upgrades[3] == 1){
+			setBoard(conveyor_library[1],24,25);
+		}
+	}
+	
+	if(game.mine_upgrades[4] == 1){
+		setBoard(conveyor_library[11],25,24);
+		if(game.mine_upgrades[5] == 1){
+			setBoard(conveyor_library[3],25,24);
+		}
+	}
+	
+	if(game.mine_upgrades[6] == 1){
+		setBoard(conveyor_library[8],25,25);
+		if(game.mine_upgrades[7] == 1){
+			setBoard(conveyor_library[0],25,25);
+		}
+	}
+	
+	if(game.swap == 1){
+		setBoard(conveyor_library[2],23,25);
+		setBoard(conveyor_library[2],26,24);
+		setBoard(conveyor_library[1],25,27);
+		setBoard(conveyor_library[1],24,23);
+	}else{
+		setBoard(conveyor_library[0],23,25);
+		setBoard(conveyor_library[0],26,24);
+		setBoard(conveyor_library[3],25,27);
+		setBoard(conveyor_library[3],24,23);
+	}
+	
+	game.swap = (game.swap+1)%2
+	
+}
 /*
     UPDATE_CURSOR
     inputs none
@@ -232,7 +337,6 @@ void update_states(){
     
     switch(game.state){
         case STATE_MENU:
-            game.cursor_locked = TRUE;
             if(pressed(UP)){
                 right_bar_changed = 1;
                 game.menu_index = ((game.menu_index-1)+2)%2;
@@ -252,7 +356,6 @@ void update_states(){
             }
             break;
         case STATE_SHOP_MENU: //shop menu has 4 categories: conveyors, mines, upgraders, furnaces
-            game.cursor_locked = FALSE;
             game.shop_index = 0;
             if(pressed_esc){
                 right_bar_changed = 1;
@@ -269,7 +372,6 @@ void update_states(){
             }
             break;  
         case STATE_SHOP: //shop menu for individual categories, index through
-            game.cursor_locked = FALSE;
             if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_SHOP_MENU;
@@ -281,14 +383,19 @@ void update_states(){
                 game.shop_index = ((game.shop_index+1)+MAX_SHOP_ITEMS)%MAX_SHOP_ITEMS;
             }else if(pressed(ENTER)){
                 if(!game.cursor_holding && game.money >= shop_prices[game.shop_menu_index][game.shop_index]){
-                    game.buying = 1;
-                    game.money -= shop_prices[game.shop_menu_index][game.shop_index];
-                    fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
+					if(game.shop_menu_index != 3){
+						game.buying = 1;
+						game.money -= shop_prices[game.shop_menu_index][game.shop_index];
+						fill_cursor(shop_library[game.shop_menu_index][game.shop_index]);
+					}else if(game.mine_upgrades[game.shop_index] == 0){
+						game.money -= shop_prices[game.shop_menu_index][game.shop_index];
+						game.mine_upgrades[game.shop_index] = 1;
+						shop_items[game.shop_menu_index][game.shop_index] = "| BOUGHT                  |\0";
+					}
                 }
             } 
             break;
         case STATE_CTRL:
-            game.cursor_locked = TRUE;
             if(pressed_esc){
                 right_bar_changed = 1;
                 game.state = STATE_MENU;
@@ -347,6 +454,11 @@ void update_right_text(){
             break;
     }
 }
+//0 0000000000000001 00000000 00000 00 00000000000000000000011000011000
+//0 0000000000000001 00000001 00000 01 00000000000000000001011000011001
+//0 0000000000000001 00000001 00001 10 00000000000000000010011001011000
+//0 0000000001100100 00000000 00000 11 00000000000000000011011001011001
+
 void update_money(){
 	uint8_t ore[8];
 	for(int i = 0; i<100; i++){

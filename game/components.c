@@ -165,6 +165,9 @@ void initialize_shop(){
     visual_library[23] = 0x4250;//down upgrader
 	
 	visual_library[24] = 0x0640;
+	
+	visual_library[25] = 0xC730;//hori
+	visual_library[26] = 0xC830;//verti
 
     //slow straight
     shop_library[0][0] = (component_t){
