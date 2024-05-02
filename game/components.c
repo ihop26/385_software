@@ -188,19 +188,9 @@ void initialize_shop(){
     		{{0},{0},{0},{0},{0}}
     		}
      };
-     //fast corner
-    shop_library[0][2] = (component_t){
-            4,4,
-        	{
-        	{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-        	{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-        	{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
-        	{{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{0}},
-        	{{0},{0},{0},{0},{0}}
-        	}
-     };
+    
      //fast straight
-    shop_library[0][3] = (component_t){
+    shop_library[0][2] = (component_t){
            	5,3,
        		{
        		{{0},{CONVEYOR_T,0,0},{0},{0},{0}},
@@ -209,6 +199,17 @@ void initialize_shop(){
        		{{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{0},{0}},
        		{{0},{CONVEYOR_T,0,0},{0},{0},{0}}
        		}
+     };
+	  //fast corner
+    shop_library[0][3] = (component_t){
+            2,2,
+        	{
+        	{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
+        	{{CONVEYOR_T,0,0},{0},{0},{0},{0}},
+        	{{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{CONVEYOR_T,3,3},{0},{0}},
+        	{{0},{0},{0},{0},{0}},
+        	{{0},{0},{0},{0},{0}}
+        	}
      };
      //launcher
      shop_library[0][4] = (component_t){
