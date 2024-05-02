@@ -12,6 +12,8 @@ struct GAME_INFO game;
 /*       6. rotation of simple components                 DONE */
 /*       7. add support for composite components           DONE*/
 /*            (figure out a good way to store this)        */
+/*       10. finish upgraders                              */
+/*       11. finish furnaces                               */
 /*       8. prestige                                       */
 /*       9. polish game                                    */
 /////////////////////////////////////////////////////////////
@@ -61,7 +63,7 @@ void setup_game(){
 
     //dark grey
     setColorPalette(2, 0x2, 0x2, 0x2);
-    
+    setColorPalette(3, 0x6, 0x6, 0x6);
     //grass
     setColorPalette(10,0x6,0xC,0x0)
     setColorPalette(11,0x4,0x8,0x0);

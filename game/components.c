@@ -63,11 +63,11 @@ uint32_t get_functional(block_t block){
         //return spawner_library[block.functional_index];
     	return 0;
     }else if(block.type == BLANK_T){//blank
-        return 0x0556;
+        return 0x05AB; //grass tile?
     }else if(block.type == CURSOR_T){
         return 0; //cursor does nothing
     }else if(block.type == WALL_T){
-        return 0;
+        return 0x0620; //wall tile
     }
     return 0;
 }
@@ -102,10 +102,10 @@ void initialize_shop(){
     conveyor_library[19] = 0x3181; // down
     
     //todo some more furnaces?
-    furnace_library[0] = 0xF0100F03; // right
-    furnace_library[1] = 0; // left
-    furnace_library[2] = 0; // up 
-    furnace_library[3] = 0; // down
+    furnace_library[0] = 0xF0100F03; //base furnace 
+    furnace_library[1] = 0; 
+    furnace_library[2] = 0;  
+    furnace_library[3] = 0; 
 
     //todo some more upgraders
     upgrader_library[0] = 0xf8110006; // right
@@ -115,25 +115,30 @@ void initialize_shop(){
 
     //visual stuff
     //fast
-    visual_library[0] = 0xC110; //right conveyor
-    visual_library[1] = 0xC410; //up conveyor
-    visual_library[2] = 0xC310; //left conveyor
-    visual_library[3] = 0xC210;//down conveyor
+    visual_library[0] = 0xC132; //right conveyor
+    visual_library[1] = 0xC432; //up conveyor
+    visual_library[2] = 0xC332; //left conveyor
+    visual_library[3] = 0xC232;//down conveyor
     //medium
-    visual_library[4] = 0x8110; //right conveyor
-    visual_library[5] = 0x8410; //up conveyor
-    visual_library[6] = 0x8310; //left conveyor
-    visual_library[7] = 0x8210;//down conveyor
+    visual_library[4] = 0x8132; //right conveyor
+    visual_library[5] = 0x8432; //up conveyor
+    visual_library[6] = 0x8332; //left conveyor
+    visual_library[7] = 0x8232;//down conveyor
     //slow
-    visual_library[8] = 0x4110; //right conveyor
-    visual_library[9] = 0x4410; //up conveyor
-    visual_library[10] = 0x4310; //left conveyor
-    visual_library[11] = 0x4210;//down conveyor
+    visual_library[8] = 0x4132; //right conveyor
+    visual_library[9] = 0x4432; //up conveyor
+    visual_library[10] = 0x4332; //left conveyor
+    visual_library[11] = 0x4232;//down conveyor
     //uber slow
-    visual_library[12] = 0x0110; //right conveyor
-    visual_library[13] = 0x0410; //up conveyor
-    visual_library[14] = 0x0310; //left conveyor
-    visual_library[15] = 0x0210;//down conveyor
+    visual_library[12] = 0x0132; //right conveyor
+    visual_library[13] = 0x0432; //up conveyor
+    visual_library[14] = 0x0332; //left conveyor
+    visual_library[15] = 0x0232;//down conveyor
+
+    visual_library[16] = 0xC9E2; //right launch
+    visual_library[17] = 0xCCE2; //up launch
+    visual_library[18] = 0xCBE2; // left launch
+    visual_library[19] = 0xCAE2; // down launch
 
     //slow straight
     shop_library[0][0] = (component_t){
@@ -187,7 +192,7 @@ void initialize_shop(){
        		{{WALL_T,0,0},{CONVEYOR_T,8,8},{WALL_T,0,0},{0},{0}},
        		{{WALL_T,0,0},{CONVEYOR_T,4,4},{WALL_T,0,0},{0},{0}},
        		{{WALL_T,0,0},{CONVEYOR_T,0,0},{WALL_T,0,0},{0},{0}},
-       		{{WALL_T,0,0},{CONVEYOR_T,16,0},{WALL_T,0,0},{0},{0}}
+       		{{WALL_T,0,0},{CONVEYOR_T,16,16},{WALL_T,0,0},{0},{0}}
        		}
      };
     //walled mini
@@ -216,7 +221,7 @@ void initialize_shop(){
     shop_library[0][7] = (component_t){
            	1,3,
        		{
-       		{{CONVEYOR_T,16,0},{0},{0},{0},{0}},
+       		{{CONVEYOR_T,16,16},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
