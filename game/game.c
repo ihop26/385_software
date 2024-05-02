@@ -42,7 +42,7 @@ void setup_game(){
             game.cursor[i][j] = (block_t){0};
         }
     }
-    uint64_t initial_mine = 0x0000800100001040;
+    uint64_t initial_mine = 0x0000808500001040;
     setMine(0,initial_mine);
     game.buying = 0;
     game.cursor_holding = 0;
@@ -62,19 +62,19 @@ void setup_game(){
 	setColorPalette(1, 0x8, 0x8, 0x8);
 
     //dark grey
-    setColorPalette(2, 0x2, 0x2, 0x2);
-    setColorPalette(3, 0x6, 0x6, 0x6);
+    setColorPalette(2, 0x4, 0x4, 0x4);
+    setColorPalette(3, 0x7, 0x7, 0x7);
 	
 	//furnace 
 	setColorPalette(4, 0xF, 0x4, 0x4);
 	//upgrader
 	setColorPalette(5,0x0,0xF,0xF);
     //grass
-    setColorPalette(10,0x6,0xC,0x0)
+    setColorPalette(10,0x6,0xC,0x0);
     setColorPalette(11,0x4,0x8,0x0);
     //colision/ore colors
-    setColorPalette(12, 0x0,0x8,0x8);
-    setColorPalette(13, 0x8,0x8,0x0);
+    setColorPalette(12, 0x0,0xF,0xF);
+    setColorPalette(13, 0xF,0xF,0x0);
     setColorPalette(14, 0x8, 0x0, 0x0);
     setColorPalette(15, 0x0, 0x8, 0x0);
 
@@ -352,6 +352,7 @@ void update_money(){
 	for(int i = 0; i<100; i++){
 		if(!getOre(i,ore)) continue;
 		uint32_t top = (ore[7]<<24) | (ore[6] << 16) | (ore[5] << 8) | ore[4];
+		xil_printf("%x\n",top);
 		uint32_t base = ((top << 1) & 0xFFFF0000) >> 16;
 		uint32_t multiplier = ((top << 17) & 0xFF000000) >> 24;
 		uint32_t exponent = ((top << 25) & 0xF8000000) >> 27;
@@ -360,7 +361,7 @@ void update_money(){
 	}
 	//xil_printf("%ld\n",game.money);
     update_m_string();
-    setBottomText(game.m_string, 0, 2, 0, 1);
+    setBottomText(game.m_string, 15, 2, 0, 1);
 
 }
 

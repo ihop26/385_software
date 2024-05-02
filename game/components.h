@@ -31,7 +31,7 @@ extern component_t shop_library [4][8];
 
 extern uint32_t conveyor_library[32];
 extern uint32_t upgrader_library[16];
-extern uint32_t furnace_library[16];
+extern uint32_t furnace_library[4];
 
 extern uint16_t visual_library[32];
 

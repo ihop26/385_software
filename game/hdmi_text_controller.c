@@ -40,8 +40,8 @@ void setBottomText(char* str, int x, int y, uint8_t background, uint8_t foregrou
 	int i = 0;
 	while (str[i]!=0)
 	{
-		hdmi_ctrl->BOTTOM_BAR[(y*BOTTOM_COLUMNS + x + i) * 2] = foreground << 4 | background;
-		hdmi_ctrl->BOTTOM_BAR[(y*BOTTOM_COLUMNS + x + i) * 2 + 1] = str[i];
+		hdmi_ctrl->BOTTOM_BAR[(y*(BOTTOM_COLUMNS+30) + x + i) * 2] = foreground << 4 | background;
+		hdmi_ctrl->BOTTOM_BAR[(y*(BOTTOM_COLUMNS+30) + x + i) * 2 + 1] = str[i];
 		i++;
 	}
 }

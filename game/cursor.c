@@ -147,8 +147,6 @@ component_t cut_snapshot(int x, int y){
         for(int j = min_x; j<min_x+5; j++){
             toReturn.blocks[j-min_x][i-min_y] = game.snapshot[j][i];
             if(game.snapshot[j][i].type != BLANK_T){
-            	xil_printf("wee \n");
-
             	if(width_start == -1){
             		width_start = j;
             		width_end = j;
