@@ -86,6 +86,7 @@ void setup_game(){
     }
 
     update_right_text();
+    initialize_board();
     update_board(0,0,49,49);
     //todo make a basic startup screen
 }
@@ -97,7 +98,8 @@ void initialize_board()
 	setMine(3,0b0000000000110010000000000000001100000000000000000011011001011001);
 	for(int i = 22; i<=27; i++){
 		for(int j = 22; j<=27; j++){
-			setVisual(0x0620, i, j); //set to walls
+			game.board[i][j] = (block_t){WALL_T,0,0}; //set to walls
+			game.occupied_board[i][j] = 1;
 		}
 	}
 	setVisual(0x06C0, 24, 24);
