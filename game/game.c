@@ -71,7 +71,7 @@ void setup_game(){
 	//furnace 
 	setColorPalette(4, 0xF, 0x4, 0x4);
 	//upgrader
-	setColorPalette(5,0x0,0xF,0xF);
+	setColorPalette(8,0xF,0x0,0xF);
     //grass
     setColorPalette(10,0x6,0xC,0x0);
     setColorPalette(11,0x4,0x8,0x0);
@@ -93,8 +93,8 @@ void setup_game(){
 void initialize_board()
 {
 	setMine(0,0b0000000000000000100000000000000000000000000000000000011000011000);
-	setMine(1,0b0000000000000000100000001000000100000000000000000001011000011001);
-	setMine(2,0b0000000000000000100000001000011000000000000000000010011001011000);
+	setMine(1,0b0000000000000000100000001000000100000000000000000001011001011000);
+	setMine(2,0b0000000000000000100000001000011000000000000000000010011000011001);
 	setMine(3,0b0000000000110010000000000000001100000000000000000011011001011001);
 	for(int i = 22; i<=27; i++){
 		for(int j = 22; j<=27; j++){
@@ -102,10 +102,9 @@ void initialize_board()
 			game.occupied_board[i][j] = 1;
 		}
 	}
-	game.board[0][1] = (block_t){CONVEYOR_T,20,27};
 	game.board[24][24] = (block_t){CONVEYOR_T,20,27};
-	game.board[25][24] = (block_t){CONVEYOR_T,20,28};
-	game.board[24][25] = (block_t){CONVEYOR_T,20,29};
+	game.board[25][24] = (block_t){CONVEYOR_T,20,29};
+	game.board[24][25] = (block_t){CONVEYOR_T,20,28};
 	game.board[25][25] = (block_t){CONVEYOR_T,20,30};
 	
 	//right conveyors
@@ -132,6 +131,29 @@ void initialize_board()
 	game.board[23][27] = (block_t){CONVEYOR_T,3,3};
 	game.board[25][27] = (block_t){CONVEYOR_T,3,3};
 	
+	game.occupied_board[25][9] = 1;
+	game.board[25][9] = (block_t){WALL_T,0,0};
+	game.occupied_board[25][10] = 1;
+	game.board[25][10] = (block_t){WALL_T,0,0};
+	game.occupied_board[25][8] = 1;
+
+	game.occupied_board[24][41] = 1;
+	game.board[25][42] = (block_t){WALL_T,0,0};
+	game.occupied_board[24][42] = 1;
+	game.occupied_board[25][40] = 1;
+	game.board[25][40] = (block_t){WALL_T,0,0};
+
+	game.occupied_board[9][24] = 1;
+	game.board[9][24] = (block_t){WALL_T,0,0};
+	game.board[10][24] = (block_t){WALL_T,0,0};
+	game.occupied_board[10][24] = 1;
+	game.occupied_board[8][24] = 1;
+
+	game.occupied_board[42][25] = 1;
+	game.board[42][25] = (block_t){WALL_T,0,0};
+	game.occupied_board[41][25] = 1;
+	game.occupied_board[40][25] = 1;
+	game.board[40][25] = (block_t){WALL_T,0,0};
 }
 void update_mines(){
 	if(game.mine_upgrades[0] == 1){
@@ -142,16 +164,16 @@ void update_mines(){
 	}
 	
 	if(game.mine_upgrades[2] == 1){
-		game.board[24][25] = (block_t){CONVEYOR_T,9,28};
+		game.board[24][25] = (block_t){CONVEYOR_T,11,28};
 		if(game.mine_upgrades[3] == 1){
-			game.board[24][25] = (block_t){CONVEYOR_T,1,28};
+			game.board[24][25] = (block_t){CONVEYOR_T,3,28};
 		}
 	}
 	
 	if(game.mine_upgrades[4] == 1){
-		game.board[25][24] = (block_t){CONVEYOR_T,11,29};
+		game.board[25][24] = (block_t){CONVEYOR_T,9,29};
 		if(game.mine_upgrades[5] == 1){
-			game.board[25][24] = (block_t){CONVEYOR_T,3,29};
+			game.board[25][24] = (block_t){CONVEYOR_T,1,29};
 		}
 	}
 	
@@ -165,13 +187,23 @@ void update_mines(){
 	if(game.swap == 1){
 		game.board[25][23] = (block_t){CONVEYOR_T,2,25};
 		game.board[24][26] = (block_t){CONVEYOR_T,2,25};
-		game.board[27][24] = (block_t){CONVEYOR_T,1,26};
+		game.board[26][25] = (block_t){CONVEYOR_T,1,26};
 		game.board[23][24] = (block_t){CONVEYOR_T,1,26};
+
+		game.board[25][9] = (block_t){CONVEYOR_T,1,26};
+		game.board[24][41] = (block_t){CONVEYOR_T,1,26};
+		game.board[9][24] = (block_t){CONVEYOR_T,2,26};
+		game.board[41][25] = (block_t){CONVEYOR_T,2,26};
 	}else{
 		game.board[25][23] = (block_t){CONVEYOR_T,0,25};
 		game.board[24][26] = (block_t){CONVEYOR_T,0,25};
-		game.board[27][24] = (block_t){CONVEYOR_T,3,26};
+		game.board[26][25] = (block_t){CONVEYOR_T,3,26};
 		game.board[23][24] = (block_t){CONVEYOR_T,3,26};
+
+		game.board[25][9] = (block_t){CONVEYOR_T,3,25};
+		game.board[24][41] = (block_t){CONVEYOR_T,3,25};
+		game.board[9][24] = (block_t){CONVEYOR_T,0,26};
+		game.board[41][25] = (block_t){CONVEYOR_T,0,26};
 	}
 	
 	game.swap = (game.swap+1)%2;
@@ -373,6 +405,7 @@ void update_states(){
 					}else if(game.mine_upgrades[game.shop_index] == 0){
 						game.money -= shop_prices[game.shop_menu_index][game.shop_index];
 						game.mine_upgrades[game.shop_index] = 1;
+						right_bar_changed  = 1;
 						char* text = "| BOUGHT                  |\0";
 						for(int i = 0; i<31; i++){
 							shop_items[game.shop_menu_index][game.shop_index][i] = text[i];

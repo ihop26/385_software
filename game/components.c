@@ -106,8 +106,8 @@ void initialize_shop(){
     //todo some more furnaces?
     furnace_library[0] = 0xF0100F03; //base furnace 
     furnace_library[1] = 0xf01F0F03; //upgrade +16 base furnace
-    furnace_library[2] = 0xf0154003; //upgrade +5 multiplier furnace  
-    furnace_library[3] = 0xf0158003; //upgrade +5 exponent furnace 
+    furnace_library[2] = 0xf0154FFF; //upgrade +5 multiplier furnace
+    furnace_library[3] = 0xf0158FFF; //upgrade +5 exponent furnace
 
 	//basic +1 base upgrader
     upgrader_library[0] = 0xf8110006; // right
@@ -120,11 +120,11 @@ void initialize_shop(){
     upgrader_library[6] = 0xf05a0046; // left
     upgrader_library[7] = 0xf05a0082; // down
 	
-	//basic +1 mult upgrader (max 10)
-	upgrader_library[8] = 0xf0514006; // right
-    upgrader_library[9] = 0xf0514882; // up
-    upgrader_library[10] = 0xf2914046; // left
-    upgrader_library[11] = 0xf2914082; // down
+	//basic +1 mult upgrader (max 16)
+	upgrader_library[8] = 0xf1114006; // right
+    upgrader_library[9] = 0xf1114882; // up
+    upgrader_library[10] = 0xf1114046; // left
+    upgrader_library[11] = 0xf1114082; // down
 	
 	//basic +1 exp upgrader (max 4)
 	upgrader_library[12] = 0xf151b006; // right
@@ -161,10 +161,10 @@ void initialize_shop(){
     visual_library[19] = 0xCAE0; // down launch
 
 	//upgraders
-	visual_library[20] = 0x4150; //right upgrader
-    visual_library[21] = 0x4450; //up upgrader
-    visual_library[22] = 0x4350; //left upgrader
-    visual_library[23] = 0x4250;//down upgrader
+	visual_library[20] = 0x4180; //right upgrader
+    visual_library[21] = 0x4480; //up upgrader
+    visual_library[22] = 0x4380; //left upgrader
+    visual_library[23] = 0x4280;//down upgrader
 	
 	visual_library[24] = 0x0640;
 	
@@ -257,7 +257,7 @@ void initialize_shop(){
      };
     //fast mini launcher
     shop_library[0][7] = (component_t){
-           	1,3,
+           	1,0,
        		{
        		{{CONVEYOR_T,16,16},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
@@ -350,7 +350,7 @@ void initialize_shop(){
            	3,3,
        		{
        		{{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{0},{0}},
-       		{{WALL_T,0,0},{FURNACE_T,2,24},{WALL_T,0,0},{0},{0}},
+       		{{WALL_T,0,0},{FURNACE_T,3,24},{WALL_T,0,0},{0},{0}},
        		{{WALL_T,0,0},{WALL_T,0,0},{WALL_T,0,0},{0},{0}},
        		{{0},{0},{0},{0},{0}},
        		{{0},{0},{0},{0},{0}}
